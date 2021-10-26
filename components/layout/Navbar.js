@@ -1,31 +1,31 @@
 import Button from "@mui/material/Button";
 
-import NextLinkComposed from "../../src/Link";
+import Link from 'next/link';
 
 import classes from "./Navbar.module.css";
 
 const Navbar = () => {
   return (
     <header className={classes.header}>
-      <NextLinkComposed className={classes.logoLink} href="/">
+      <Link href="/">
         <div className={classes.logo}>Auctions</div>
-      </NextLinkComposed>
+      </Link>
       <nav>
         <ul>
           <li>
-            <NextLinkComposed href="/new-auction">
+            <Link href="/new-auction">
               <Button variant="contained">New</Button>
-            </NextLinkComposed>
+            </Link>
           </li>
           <li>
-            <NextLinkComposed href="/login">
+            <Link href="/login">
               <Button variant="contained">Login</Button>
-            </NextLinkComposed>
+            </Link>
           </li>
           <li>
-            <NextLinkComposed href="/sign-up">
+            <Link href="/sign-up">
               <Button variant="contained">Sign</Button>
-            </NextLinkComposed>
+            </Link>
           </li>
         </ul>
       </nav>
