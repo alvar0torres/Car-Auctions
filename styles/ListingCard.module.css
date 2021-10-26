@@ -1,0 +1,21 @@
+.card {
+    border: 2px solid transparent;
+    border-radius: 11px;
+}
+
+
+.card:hover {
+
+    border: 2px solid rgb(5, 3, 0);
+    box-shadow: 2px 2px 2px 2px rgb(163, 161, 161);
+    position: relative;
+    transform: scale(1.05);
+    transition: transform 0.2s ease-out;
+    
+
+}
+
+
+.price {
+    font-weight: bold;
+}
