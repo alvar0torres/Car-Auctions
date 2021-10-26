@@ -57,21 +57,18 @@ const NewAuctionForm = () => {
         <form onSubmit={onSubmitHandler} className={classes.form}>
           <h1>New Auction</h1>
           <TextField
-            className={classes.input}
             inputRef={inputModel}
             id="outlined-basic"
             label="Model"
             variant="outlined"
           />
           <TextField
-            className={classes.input}
             inputRef={inputDescription}
             id="outlined-basic"
             label="Description"
             variant="outlined"
           />
           <TextField
-            className={classes.input}
             inputRef={inputPrice}
             id="outlined-number"
             label="$ Price"
@@ -81,14 +78,12 @@ const NewAuctionForm = () => {
             }}
           />
           <TextField
-            className={classes.input}
             inputRef={inputImage}
             id="outlined-basic"
             label="Picture (URL)"
             variant="outlined"
           />
           <TextField
-            className={classes.input}
             inputRef={inputDateTime}
             id="datetime-local"
             label="Ending Date"
