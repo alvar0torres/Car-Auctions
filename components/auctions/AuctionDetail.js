@@ -1,4 +1,4 @@
-import SimpleCard from "./SimpleCard";
+import SimpleCard from "../ui/SimpleCard";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import OutlinedInput from "@mui/material/OutlinedInput";
@@ -7,13 +7,13 @@ import Button from "@mui/material/Button";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
-import classes from "../styles/ProductPageCard.module.css";
+import classes from "./AuctionDetail.module.css";
 
-const ProductPageCard = (props) => {
+const AuctionDetail = (props) => {
   return (
-    <section className={classes.productCard}>
+    <section className={classes.auctionCard}>
       <SimpleCard>
-        <div className={classes.cardFlex}>
+        <div className={classes.auctionCardFlex}>
           <FavoriteBorderIcon
             sx={{
               bgcolor: "white",
@@ -26,12 +26,18 @@ const ProductPageCard = (props) => {
             fontSize="large"
             className={classes.favoriteBtn}
           />
-          <h3 className={classes.badge}>ACTIVE</h3>
-          <img className={classes.image} src={props.image} alt="car picture" />
-          <div className={classes.cardGrid}>
-            <h1 className={classes.title}>{props.model}</h1>
-            <div className={classes.description}>{props.description}</div>
-            <h1 className={classes.price}>${props.price}</h1>
+          <h3 className={classes.statusBadge}>ACTIVE</h3>
+          <img
+            className={classes.image}
+            src={props.auction.image}
+            alt="car picture"
+          />
+          <div className={classes.auctionCardGrid}>
+            <h1 className={classes.model}>{props.auction.model}</h1>
+            <div className={classes.description}>
+              {props.auction.description}
+            </div>
+            <h1 className={classes.price}>${props.auction.price}</h1>
             <FormControl className={classes.form} fullWidth sx={{ m: 1 }}>
               <InputLabel htmlFor="outlined-adornment-amount">
                 Your bid
@@ -46,13 +52,11 @@ const ProductPageCard = (props) => {
               <Button variant="contained">BID</Button>
             </FormControl>
             <div className={classes.ownerAndTime}>
-              <div className={classes.owner}>Owner: {props.owner}</div>
-              <div className={classes.timeLeft}>Time left: {props.remaining}</div>
+              <div className={classes.owner}>Owner: {props.auction.owner}</div>
+              <div className={classes.timeLeft}>
+                Time left: {props.auction.remaining}
+              </div>
             </div>
-            {/* <div className={classes.yellowxd}>This is yellow button</div>
-            <div className={classes.redxd}>This is red button</div>
-            <div className={classes.status}>This is status</div>
-            <div className={classes.creator}>This is creator</div> */}
           </div>
         </div>
       </SimpleCard>
@@ -60,4 +64,4 @@ const ProductPageCard = (props) => {
   );
 };
 
-export default ProductPageCard;
+export default AuctionDetail;

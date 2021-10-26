@@ -1,13 +1,13 @@
-// our-domain.com/product/productId
+// our-domain.com/auction/auctionId
 
 import { useRouter } from "next/router";
 
-import ProductPageCard from "../../components/ProductPageCard";
+import AuctionDetail from "../../components/auctions/AuctionDetail";
 
 const DUMMY_DATA = [
   {
     model: "Mustang",
-    productId: "p1",
+    auctionId: "p1",
     remaining: "2d 1h",
     price: 1000,
     description: "very nice and fast car. Blue color",
@@ -17,7 +17,7 @@ const DUMMY_DATA = [
   },
   {
     model: "Red Car",
-    productId: "p2",
+    auctionId: "p2",
     remaining: "4d 3h",
     price: 7000,
     description: "very nice and fast car. Blue color XXX2",
@@ -28,7 +28,7 @@ const DUMMY_DATA = [
   },
   {
     model: "Yellow",
-    productId: "p3",
+    auctionId: "p3",
     remaining: "3d 1h",
     price: 3000,
     description: "very nice and fast car. Blue color XXX3",
@@ -39,7 +39,7 @@ const DUMMY_DATA = [
   },
   {
     model: "Very Old",
-    productId: "p4",
+    auctionId: "p4",
     remaining: "1d 6h",
     price: 4000,
     description: "very nice and fast car. Blue colo XXX4 r",
@@ -50,7 +50,7 @@ const DUMMY_DATA = [
   },
   {
     model: "Fast One",
-    productId: "p5",
+    auctionId: "p5",
     remaining: "3d 4h",
     price: 2500,
     description: "very nice and fast car. Blue color XXX5",
@@ -61,31 +61,19 @@ const DUMMY_DATA = [
   },
 ];
 
-const Product = () => {
+const Auction = () => {
   const router = useRouter();
 
-  const productId = router.query.productId;
-  let productInfo = {};
+  const auctionId = router.query.auctionId;
+  let auctionInfo = {};
 
-  DUMMY_DATA.map((product) => {
-    if (product.productId === productId) {
-      productInfo = product;
+  DUMMY_DATA.map((auction) => {
+    if (auction.auctionId === auctionId) {
+      auctionInfo = auction;
     }
   });
 
-  console.log(productInfo);
-
-  return (
-    <ProductPageCard
-      image={productInfo.image}
-      price={productInfo.price}
-      model={productInfo.model}
-      description={productInfo.description}
-      creator={productInfo.creator}
-      owner={productInfo.owner}
-      remaining={productInfo.remaining}
-    />
-  );
+  return <AuctionDetail auction={auctionInfo} />;
 };
 
-export default Product;
+export default Auction;
