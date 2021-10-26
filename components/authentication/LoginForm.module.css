@@ -5,9 +5,12 @@
 }
 
 .form {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-gap: 10px;
+  display: flex;
+  flex-direction: column;
   padding: 2rem;
   text-align: center;
+}
+
+.input {
+  margin: 0.4rem 0;
 }

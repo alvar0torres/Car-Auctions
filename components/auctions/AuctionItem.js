@@ -1,4 +1,4 @@
-import Link from "next/link";
+import NextLinkComposed from "../../src/Link";
 
 import MaterialCard from "../ui/MaterialCard";
 import CardContent from "@mui/material/CardContent";
@@ -11,7 +11,7 @@ import classes from "./AuctionItem.module.css";
 const AuctionItem = (props) => {
   return (
     <MaterialCard>
-      <Link href={`/auction/${props.id}`}>
+      <NextLinkComposed className={classes.link} href={`/auction/${props.id}`}>
         <CardActionArea>
           <CardMedia
             component="img"
@@ -21,17 +21,10 @@ const AuctionItem = (props) => {
           />
           <CardContent>
             <div>
-              <Typography
-                gutterBottom
-                variant="h5"
-                component="div"
-              >
+              <Typography gutterBottom variant="h5" component="div">
                 {props.model}
               </Typography>
-              <Typography
-                gutterBottom
-                component="div"
-              >
+              <Typography gutterBottom component="div">
                 {props.remaining}
               </Typography>
             </div>
@@ -45,7 +38,7 @@ const AuctionItem = (props) => {
             </Typography>
           </CardContent>
         </CardActionArea>
-      </Link>
+      </NextLinkComposed>
       {/* <CardActions>
         <Button size="small" color="primary">
           Add to Watchlist

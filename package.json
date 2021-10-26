@@ -10,13 +10,17 @@
   },
   "dependencies": {
     "@date-io/date-fns": "^2.11.0",
+    "@emotion/cache": "^11.5.0",
     "@emotion/react": "^11.5.0",
+    "@emotion/server": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@mui/icons-material": "^5.0.4",
-    "@mui/material": "^5.0.4",
+    "@mui/material": "^5.0.5",
+    "@reduxjs/toolkit": "^1.6.2",
     "next": "11.1.2",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "react-redux": "^7.2.6"
   },
   "devDependencies": {
     "eslint": "7.32.0",

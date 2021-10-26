@@ -3,10 +3,14 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 import { useRef, useState } from "react";
+import { auctionsActions } from "../../store/auctionsSlice";
+import { useDispatch } from "react-redux";
 
 import classes from "./NewAuctionForm.module.css";
 
 const NewAuctionForm = () => {
+  const dispatch = useDispatch();
+
   const inputModel = useRef();
   const inputDescription = useRef();
   const inputPrice = useRef();
@@ -27,30 +31,47 @@ const NewAuctionForm = () => {
     console.log(inputImage.current.value);
     console.log(inputDateTime.current.value);
 
+    const newAuctionData = {
+      model: inputModel.current.value,
+      auctionId: Date.now(),
+      remaining: "10h",
+      price: inputPrice.current.value,
+      description: inputDescription.current.value,
+      active: true,
+      owner: "alvaro2021",
+      image: inputImage.current.value,
+    };
+
     inputModel.current.value = "";
     inputDescription.current.value = "";
     inputPrice.current.value = "";
     inputImage.current.value = "";
     inputDateTime.current.value = "";
+
+    dispatch(auctionsActions.addAuction(newAuctionData));
   };
 
   return (
     <section className={classes.formSection}>
       <SimpleCard>
         <form onSubmit={onSubmitHandler} className={classes.form}>
+          <h1>New Auction</h1>
           <TextField
+            className={classes.input}
             inputRef={inputModel}
             id="outlined-basic"
             label="Model"
             variant="outlined"
           />
           <TextField
+            className={classes.input}
             inputRef={inputDescription}
             id="outlined-basic"
             label="Description"
             variant="outlined"
           />
           <TextField
+            className={classes.input}
             inputRef={inputPrice}
             id="outlined-number"
             label="$ Price"
@@ -60,12 +81,14 @@ const NewAuctionForm = () => {
             }}
           />
           <TextField
+            className={classes.input}
             inputRef={inputImage}
             id="outlined-basic"
             label="Picture (URL)"
             variant="outlined"
           />
           <TextField
+            className={classes.input}
             inputRef={inputDateTime}
             id="datetime-local"
             label="Ending Date"
@@ -76,7 +99,7 @@ const NewAuctionForm = () => {
               shrink: true,
             }}
           />
-          <Button type="submit" variant="contained">
+          <Button className={classes.input} type="submit" variant="contained">
             Submit
           </Button>
         </form>

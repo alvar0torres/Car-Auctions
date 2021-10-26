@@ -26,3 +26,7 @@
 .header li {
   margin-left: 0.25rem;
 }
+
+.logoLink {
+  text-decoration: none;
+}

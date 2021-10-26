@@ -11,24 +11,27 @@ const SignupForm = () => {
         <form className={classes.form}>
           <h1>Sign Up</h1>
           <TextField
+            className={classes.input}
             id="outlined-basic"
             label="E-mail"
             type="email"
             variant="outlined"
           />
           <TextField
+            className={classes.input}
             id="outlined-basic"
             label="Username"
             type="text"
             variant="outlined"
           />
           <TextField
+            className={classes.input}
             id="outlined-basic"
             label="Password"
             type="password"
             variant="outlined"
           />
-          <Button type="submit" variant="contained">
+          <Button className={classes.input} type="submit" variant="contained">
             Submit
           </Button>
         </form>
