@@ -4,43 +4,57 @@ import Button from "@mui/material/Button";
 
 import { useRef, useState } from "react";
 import { auctionsActions } from "../../store/auctionsSlice";
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
 
 import classes from "./NewAuctionForm.module.css";
 
 const NewAuctionForm = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
+  const username = useSelector((state) => state.auth.username);
 
   const inputModel = useRef();
   const inputDescription = useRef();
   const inputPrice = useRef();
   const inputImage = useRef();
   const inputDateTime = useRef();
+  const auctionId = Date.now();
 
-  // TODO:
-  // 1) Add username/uid from localStorage.
-  // 2) Add active = true;
-  // 3) Add productId
+  //Getting current formatted Date and Time timestamp to be used in the expirationTime input selector:
+
+  const currentDate = new Date();
+  const time =
+    currentDate.getHours() +
+    ":" +
+    currentDate.getMinutes();
+  const cDay = currentDate.getDate();
+  const cMonth = currentDate.getMonth() + 1;
+  const cYear = currentDate.getFullYear();
+
+  const currentFormattedDateTime = cYear + "-" + cMonth + "-" + cDay + "T" + time;
+
+  
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
 
-    console.log(inputModel.current.value);
-    console.log(inputDescription.current.value);
-    console.log(inputPrice.current.value);
-    console.log(inputImage.current.value);
-    console.log(inputDateTime.current.value);
+    const expirationDate = new Date(inputDateTime.current.value);
+    const expirationDateInMs = expirationDate.getTime();
 
     const newAuctionData = {
       model: inputModel.current.value,
-      auctionId: Date.now(),
-      remaining: "10h",
+      auctionId: auctionId,
+      expirationTime: expirationDateInMs,
       price: inputPrice.current.value,
       description: inputDescription.current.value,
       active: true,
-      owner: "alvaro2021",
+      owner: username,
       image: inputImage.current.value,
     };
+
+    console.log(newAuctionData);
 
     inputModel.current.value = "";
     inputDescription.current.value = "";
@@ -49,6 +63,8 @@ const NewAuctionForm = () => {
     inputDateTime.current.value = "";
 
     dispatch(auctionsActions.addAuction(newAuctionData));
+
+    router.push(`/`);
   };
 
   return (
@@ -88,7 +104,7 @@ const NewAuctionForm = () => {
             id="datetime-local"
             label="Ending Date"
             type="datetime-local"
-            defaultValue="2017-05-24T10:30"
+            defaultValue={currentFormattedDateTime}
             sx={{ width: 250 }}
             InputLabelProps={{
               shrink: true,

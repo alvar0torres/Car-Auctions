@@ -1,4 +1,6 @@
-import Link from 'next/link';
+import Link from "next/link";
+import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
+import daysAndHours from "../../helpers/daysAndHoursConverter";
 
 import MaterialCard from "../ui/MaterialCard";
 import CardContent from "@mui/material/CardContent";
@@ -9,6 +11,12 @@ import { Button, CardActionArea, CardActions } from "@mui/material";
 import classes from "./AuctionItem.module.css";
 
 const AuctionItem = (props) => {
+  const remainingTimeinMs = calculateRemainingTime(
+    parseInt(props.expirationTime)
+  );
+
+  const expirationDate = daysAndHours(remainingTimeinMs);
+
   return (
     <MaterialCard>
       <Link href={`/auction/${props.id}`}>
@@ -25,7 +33,7 @@ const AuctionItem = (props) => {
                 {props.model}
               </Typography>
               <Typography gutterBottom component="div">
-                {props.remaining}
+                Left: {expirationDate}
               </Typography>
             </div>
             <Typography

@@ -1,8 +1,7 @@
 import { useRef, useState } from "react";
-import { useRouter } from 'next/router'
+import { useRouter } from "next/router";
 import { authActions } from "../../store/authSlice";
 import { useDispatch } from "react-redux";
-
 import { useCookies } from "react-cookie";
 
 import SimpleCard from "../../components/ui/SimpleCard";
@@ -56,6 +55,7 @@ const LoginForm = () => {
           console.log(data.error.message);
           setError(data.error.message);
         }
+
         setCookie("token", JSON.stringify(data.idToken), {
           path: "/",
           maxAge: 3600, // Expires after 1hr
@@ -71,6 +71,25 @@ const LoginForm = () => {
           maxAge: 3600, // Expires after 1hr
           sameSite: true,
         });
+
+        const id = data.localId;
+
+        return fetch(
+          "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/users.json"
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            let username = "";
+
+            if (data != null) {
+              for (const value of Object.values(data)) {
+                if (value.userId === id) {
+                  username = value.username;
+                  dispatch(authActions.updateUsername(username));
+                }
+              }
+            }
+          });
       })
       .catch((error) => {
         console.log(error);

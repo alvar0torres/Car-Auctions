@@ -9,7 +9,7 @@ const AuctionList = (props) => {
         <li key={auction.auctionId}>
           <AuctionItem
             model={auction.model}
-            remaining={auction.remaining}
+            expirationTime={auction.expirationTime}
             price={auction.price}
             image={auction.image}
             id={auction.auctionId}

@@ -7,9 +7,35 @@ import Button from "@mui/material/Button";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
+import { useRef } from "react";
+import { useRouter } from "next/router";
+import { useDispatch } from "react-redux";
+import { auctionsActions } from "../../store/auctionsSlice";
+
+import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
+import daysAndHours from "../../helpers/daysAndHoursConverter";
+
 import classes from "./AuctionDetail.module.css";
 
 const AuctionDetail = (props) => {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const bidInput = useRef(); 
+
+  const remainingTimeinMs = calculateRemainingTime(
+    parseInt(props.auction.expirationTime)
+  );
+
+  const expirationDate = daysAndHours(remainingTimeinMs);
+
+  const onSubmitHandler = (event) => {
+    event.preventDefault();
+
+    const auctionId = router.query.auctionId;
+
+    dispatch(auctionsActions.bid({auctionId: auctionId, bid: bidInput.current.value}))
+  };
+
   return (
     <section className={classes.auctionCard}>
       <SimpleCard>
@@ -38,23 +64,28 @@ const AuctionDetail = (props) => {
               {props.auction.description}
             </div>
             <h1 className={classes.price}>${props.auction.price}</h1>
-            <FormControl className={classes.form} fullWidth sx={{ m: 1 }}>
-              <InputLabel htmlFor="outlined-adornment-amount">
-                Your bid
-              </InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-amount"
-                startAdornment={
-                  <InputAdornment position="start">$</InputAdornment>
-                }
-                label="Amount"
-              />
-              <Button variant="contained">BID</Button>
-            </FormControl>
+            <form onSubmit={onSubmitHandler}>
+              <FormControl className={classes.form} fullWidth sx={{ m: 1 }}>
+                <InputLabel htmlFor="outlined-adornment-amount">
+                  Your bid
+                </InputLabel>
+                <OutlinedInput
+                  inputRef={bidInput}
+                  id="outlined-adornment-amount"
+                  startAdornment={
+                    <InputAdornment position="start">$</InputAdornment>
+                  }
+                  label="Amount"
+                />
+                <Button type="submit" variant="contained">
+                  BID
+                </Button>
+              </FormControl>
+            </form>
             <div className={classes.ownerAndTime}>
               <div className={classes.owner}>Owner: {props.auction.owner}</div>
               <div className={classes.timeLeft}>
-                Time left: {props.auction.remaining}
+                Time left: {expirationDate}
               </div>
             </div>
           </div>

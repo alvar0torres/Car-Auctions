@@ -6,26 +6,19 @@ import { useCookies } from "react-cookie";
 import Navbar from "./Navbar";
 import classes from "./Layout.module.css";
 
+import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
+
 const Layout = (props) => {
   const dispatch = useDispatch();
   const [cookie, setCookie] = useCookies(['expirationTime']);
 
   //////////////////AUTO-LOGOUT///////////////////////////////
 
-  const calculateRemainingTime = () => {
-    const currentTime = Date.now();
-    let expirationTime = "";
-
-    expirationTime = parseInt(cookie.expirationTime);
-
-    const remainingTime = expirationTime - currentTime;
-
-    return remainingTime;
-  };
+  const expirationTime = parseInt(cookie.expirationTime);
 
   setTimeout(() => {
     dispatch(authActions.logout());
-  }, calculateRemainingTime());
+  }, calculateRemainingTime(expirationTime));
 
   ///////////////////////////////////////////////////////////
 

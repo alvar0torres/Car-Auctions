@@ -14,6 +14,7 @@ const Navbar = () => {
   const [cookie, setCookie, removeCookie] = useCookies();
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const username = useSelector((state) => state.auth.username);
 
   const logoutHandler = () => {
     removeCookie("token");
@@ -39,7 +40,7 @@ const Navbar = () => {
             <li>
               <Link href="/">
                 <Button onClick={logoutHandler} variant="contained">
-                  Logout
+                  ({username}) Logout
                 </Button>
               </Link>
             </li>
