@@ -78,7 +78,7 @@ const AuctionDetail = (props) => {
       dispatch(
         auctionsActions.bid({
           auctionId: auctionId,
-          bid: bidInput.current.value,
+          bid: parseInt(bidInput.current.value),
         })
       );
       bidInput.current.value = "";

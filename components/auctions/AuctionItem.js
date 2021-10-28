@@ -48,7 +48,7 @@ const AuctionItem = (props) => {
               variant="h5"
               component="div"
             >
-              ${formattedPrice}
+              ${formattedPrice.toLocaleString("en-US")}
             </Typography>
           </CardContent>
         </CardActionArea>

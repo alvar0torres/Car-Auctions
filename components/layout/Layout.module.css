@@ -1,6 +1,10 @@
 .main {
-  margin: 2rem auto;
+  margin: 3.5rem auto;
   width: 95%;
   max-width: 100rem;
 }
 
+.alert {
+  position: absolute;
+  z-index: 15;
+}

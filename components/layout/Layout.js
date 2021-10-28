@@ -36,6 +36,7 @@ const Layout = (props) => {
       <Navbar />
       {alertState.showAlert && (
         <Alert
+          className={classes.alert}
           onClose={onCloseHandler}
           severity={alertState.type}
           sx={{ width: "100%" }}
