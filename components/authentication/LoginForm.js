@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { authActions } from "../../store/authSlice";
+import { alertActions } from "../../store/alertSlice";
 import { useDispatch } from "react-redux";
 import { useCookies } from "react-cookie";
 
@@ -16,7 +17,7 @@ const LoginForm = () => {
 
   const emailInput = useRef();
   const passwordInput = useRef();
-  const [error, setError] = useState(null);
+  
 
   const dispatch = useDispatch();
 
@@ -28,11 +29,6 @@ const LoginForm = () => {
       password: passwordInput.current.value,
       returnSecureToken: true,
     };
-
-    emailInput.current.value = "";
-    passwordInput.current.value = "";
-
-    router.push(`/`);
 
     fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAtfB7Tgz0D94hYlzsnrPoipQHWhCM_qKY",
@@ -53,7 +49,24 @@ const LoginForm = () => {
         }
         if (data.error) {
           console.log(data.error.message);
-          setError(data.error.message);
+          let message = null;
+
+          if (data.error.message === "INVALID_EMAIL") {
+            message = "Please enter a valid e-mail address.";
+          } else if (data.error.message === "EMAIL_NOT_FOUND") {
+            message =
+              "The entered email address is not registered. Please sign up first.";
+          } else if (data.error.message === "INVALID_PASSWORD") {
+            message = "The password is not correct.";
+          } else if (data.error.message === "MISSING_PASSWORD") {
+            message = "The password is missing.";
+          }
+
+          dispatch(alertActions.error(message || data.error.message));
+          setTimeout(() => {
+            dispatch(alertActions.close());
+          }, 5000);
+          return;
         }
 
         setCookie("token", JSON.stringify(data.idToken), {
@@ -89,6 +102,16 @@ const LoginForm = () => {
                 }
               }
             }
+
+            router.push(`/`);
+
+            emailInput.current.value = "";
+            passwordInput.current.value = "";
+
+            dispatch(alertActions.success("Welcome back, " + username + "!"));
+            setTimeout(() => {
+              dispatch(alertActions.close());
+            }, 5000);
           });
       })
       .catch((error) => {
