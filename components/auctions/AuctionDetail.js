@@ -74,7 +74,7 @@ const AuctionDetail = (props) => {
         dispatch(alertActions.close());
       }, 5000);
       return;
-    } else if (parseInt(bidInput.current.value) > auctionState.price) {
+    } else if (parseInt(bidInput.current.value) > parseInt(props.auction.price)) {
       dispatch(
         auctionsActions.bid({
           auctionId: auctionId,
@@ -95,12 +95,6 @@ const AuctionDetail = (props) => {
       }, 5000);
     }
   };
-
-  let formattedPrice = null;
-
-  if (auctionState) {
-    formattedPrice = auctionState.price.toLocaleString("en-US");
-  }
 
   const onFavouriteHandler = () => {
     if (!isLoggedIn) {
@@ -167,7 +161,9 @@ const AuctionDetail = (props) => {
             <div className={classes.description}>
               {props.auction.description}
             </div>
-            <h1 className={priceClasses}>${formattedPrice}</h1>
+            <h1 className={priceClasses}>
+              ${props.auction.price.toLocaleString("en-US")}
+            </h1>
             <form onSubmit={onSubmitHandler} className={classes.form}>
               <TextField
                 inputRef={bidInput}

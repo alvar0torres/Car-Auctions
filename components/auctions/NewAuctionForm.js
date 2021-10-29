@@ -25,17 +25,14 @@ const NewAuctionForm = () => {
   //Getting current formatted Date and Time timestamp to be used in the expirationTime input selector:
 
   const currentDate = new Date();
-  const time =
-    currentDate.getHours() +
-    ":" +
-    currentDate.getMinutes();
+  const mins = ("0" + currentDate.getMinutes()).slice(-2);
+  const time = currentDate.getHours() + ":" + mins;
   const cDay = currentDate.getDate();
   const cMonth = currentDate.getMonth() + 1;
   const cYear = currentDate.getFullYear();
 
-  const currentFormattedDateTime = cYear + "-" + cMonth + "-" + cDay + "T" + time;
-
-  
+  const currentFormattedDateTime =
+    cYear + "-" + cMonth + "-" + cDay + "T" + time;
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -45,9 +42,9 @@ const NewAuctionForm = () => {
 
     const newAuctionData = {
       model: inputModel.current.value,
-      auctionId: auctionId,
+      auctionId: auctionId.toString(),
       expirationTime: expirationDateInMs,
-      price: inputPrice.current.value,
+      price: parseInt(inputPrice.current.value),
       description: inputDescription.current.value,
       active: true,
       owner: username,

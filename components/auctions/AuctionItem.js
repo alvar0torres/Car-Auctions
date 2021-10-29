@@ -17,12 +17,6 @@ const AuctionItem = (props) => {
 
   const expirationDate = daysAndHours(remainingTimeinMs);
 
-  let formattedPrice = null;
-
-  if (props) {
-    formattedPrice = props.price.toLocaleString("en-US")
-  }
-
   return (
     <MaterialCard>
       <Link href={`/auction/${props.id}`}>
@@ -48,7 +42,7 @@ const AuctionItem = (props) => {
               variant="h5"
               component="div"
             >
-              ${formattedPrice.toLocaleString("en-US")}
+              ${props.price.toLocaleString("en-US")}
             </Typography>
           </CardContent>
         </CardActionArea>

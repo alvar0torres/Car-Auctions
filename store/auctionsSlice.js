@@ -62,7 +62,8 @@ const auctionsSlice = createSlice({
   initialState: { auctionList: DUMMY_DATA },
   reducers: {
     addAuction(state, action) {
-      state.auctionList.push(action.payload);
+      const newAuction = action.payload;
+      state.auctionList.push(newAuction);
     },
     bid(state, action) {
       const existingAuction = state.auctionList.find(
