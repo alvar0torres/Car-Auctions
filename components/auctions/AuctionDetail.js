@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { auctionsActions } from "../../store/auctionsSlice";
 import { favouriteActions } from "../../store/favouriteSlice";
 import { alertActions } from "../../store/alertSlice";
+import { authActions } from "../../store/authSlice";
 
 import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
 import daysAndHours from "../../helpers/daysAndHoursConverter";
@@ -23,13 +24,9 @@ const AuctionDetail = (props) => {
   const bidInput = useRef();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const userId = useSelector((state) => state.auth.userId);
+  const username = useSelector((state) => state.auth.username);
   const favourites = useSelector((state) => state.favourites.favouritesList);
   const [favourite, setFavourite] = useState(false);
-  const auctionState = useSelector((state) =>
-    state.auctions.auctionList.find(
-      (auction) => auction.auctionId === router.query.auctionId
-    )
-  );
 
   useEffect(() => {
     let existingFavourite = null;
@@ -59,7 +56,7 @@ const AuctionDetail = (props) => {
 
   const expirationDate = daysAndHours(remainingTimeinMs);
 
-  const onSubmitHandler = (event) => {
+  const onBidHandler = (event) => {
     event.preventDefault();
 
     const auctionId = router.query.auctionId;
@@ -74,11 +71,14 @@ const AuctionDetail = (props) => {
         dispatch(alertActions.close());
       }, 5000);
       return;
-    } else if (parseInt(bidInput.current.value) > parseInt(props.auction.price)) {
+    } else if (
+      parseInt(bidInput.current.value) > parseInt(props.auction.price)
+    ) {
       dispatch(
         auctionsActions.bid({
           auctionId: auctionId,
           bid: parseInt(bidInput.current.value),
+          username: username,
         })
       );
       bidInput.current.value = "";
@@ -164,7 +164,7 @@ const AuctionDetail = (props) => {
             <h1 className={priceClasses}>
               ${props.auction.price.toLocaleString("en-US")}
             </h1>
-            <form onSubmit={onSubmitHandler} className={classes.form}>
+            <form onSubmit={onBidHandler} className={classes.form}>
               <TextField
                 inputRef={bidInput}
                 id="outlined-number"
