@@ -27,6 +27,24 @@ const AuctionDetail = (props) => {
   const username = useSelector((state) => state.auth.username);
   const favourites = useSelector((state) => state.favourites.favouritesList);
   const [favourite, setFavourite] = useState(false);
+  const [lastBidder, setLastBidder] = useState("");
+  const [isActive, setIsActive] = useState(true);
+  const [isClosed, setIsClosed] = useState(false);
+  const auctionState = useSelector((state) =>
+    state.auctions.auctionList.find((auction) => auction.auctionId === router.query.auctionId)
+  );
+
+  useEffect(() => {
+    if (remainingTimeinMs < 0) {
+      if (auctionState.lastBidder === "") {
+        setLastBidder("This auction ended with no bids");
+        setIsClosed(true);
+      } else {
+        setLastBidder(auctionState.lastBidder);
+      }
+      setIsActive(false);
+    }
+  }, []);
 
   useEffect(() => {
     let existingFavourite = null;
@@ -56,6 +74,12 @@ const AuctionDetail = (props) => {
 
   const expirationDate = daysAndHours(remainingTimeinMs);
 
+  useEffect(() => {
+    if (remainingTimeinMs < 0) {
+      setIsActive(false);
+    }
+  }, []);
+
   const onBidHandler = (event) => {
     event.preventDefault();
 
@@ -72,12 +96,12 @@ const AuctionDetail = (props) => {
       }, 5000);
       return;
     } else if (
-      parseInt(bidInput.current.value) > parseInt(props.auction.price)
+      bidInput.current.value > parseFloat(props.auction.price.replace(/,/g, ""))
     ) {
       dispatch(
         auctionsActions.bid({
           auctionId: auctionId,
-          bid: parseInt(bidInput.current.value),
+          bid: parseInt(bidInput.current.value).toLocaleString("en-US"),
           username: username,
         })
       );
@@ -150,7 +174,13 @@ const AuctionDetail = (props) => {
               onClick={onFavouriteHandler}
             />
           )}
-          <h3 className={classes.statusBadge}>ACTIVE</h3>
+          {isActive && <h3 className={classes.activeBadge}>ACTIVE</h3>}
+          {!isActive && !isClosed && (
+            <h3 className={classes.soldBadge}>SOLD</h3>
+          )}
+          {!isActive && isClosed && (
+            <h3 className={classes.closedBadge}>CLOSED</h3>
+          )}
           <img
             className={classes.image}
             src={props.auction.image}
@@ -161,10 +191,8 @@ const AuctionDetail = (props) => {
             <div className={classes.description}>
               {props.auction.description}
             </div>
-            <h1 className={priceClasses}>
-              ${props.auction.price.toLocaleString("en-US")}
-            </h1>
-            <form onSubmit={onBidHandler} className={classes.form}>
+            <h1 className={priceClasses}>${props.auction.price}</h1>
+            {isActive && <form onSubmit={onBidHandler} className={classes.form}>
               <TextField
                 inputRef={bidInput}
                 id="outlined-number"
@@ -179,16 +207,18 @@ const AuctionDetail = (props) => {
               <Button type="submit" variant="contained">
                 BID
               </Button>
-            </form>
+            </form>}
+            
             <div className={classes.ownerAndTime}>
               <div>
                 Owner:{" "}
                 <span className={classes.ownerSpan}>{props.auction.owner}</span>
               </div>
-              <div>
+              {isClosed && <div>This auction ended with no bids</div>}
+              {isActive && <div>
                 Time left:{" "}
                 <span className={classes.timeLeftSpan}>{expirationDate}</span>
-              </div>
+              </div>}
             </div>
           </div>
         </div>

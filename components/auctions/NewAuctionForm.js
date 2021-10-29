@@ -44,11 +44,12 @@ const NewAuctionForm = () => {
       model: inputModel.current.value,
       auctionId: auctionId.toString(),
       expirationTime: expirationDateInMs,
-      price: parseInt(inputPrice.current.value),
+      price: parseInt(inputPrice.current.value).toLocaleString("en-US"),
       description: inputDescription.current.value,
       active: true,
       owner: username,
-      image: inputImage.current.value,
+      image: inputImage.current.value, 
+      lastBidder: "",
     };
 
     console.log(newAuctionData);

@@ -40,7 +40,19 @@
   margin: 0;
 }
 
-.statusBadge {
+.activeBadge {
+  text-align: center;
+  position: absolute;
+  color: white;
+  background-color: rgb(22, 175, 8);
+  width: 16rem;
+  top: 0;
+  left: 0;
+  margin: 0;
+  transform: rotateZ(-45deg) translateX(-5.2rem) translateY(-3rem);
+}
+
+.soldBadge {
   text-align: center;
   position: absolute;
   color: white;
@@ -51,6 +63,19 @@
   margin: 0;
   transform: rotateZ(-45deg) translateX(-5.2rem) translateY(-3rem);
 }
+
+.closedBadge {
+  text-align: center;
+  position: absolute;
+  color: white;
+  background-color: rgb(129, 127, 126);
+  width: 16rem;
+  top: 0;
+  left: 0;
+  margin: 0;
+  transform: rotateZ(-45deg) translateX(-5.2rem) translateY(-3rem);
+}
+
 
 .form {
   display: grid;
@@ -88,6 +113,7 @@
   grid-area: ownerAndTime;
   display: grid;
   grid-gap: 20px;
+  justify-content: center;
 }
 
 .ownerSpan {
