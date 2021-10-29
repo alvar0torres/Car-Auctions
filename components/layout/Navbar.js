@@ -17,8 +17,6 @@ const Navbar = () => {
   const [drawerClass, setDrawerClass] = useState(classes.mobileNav);
   const [backdropClass, setBackdropClass] = useState(classes.backdrop);
 
-  
-
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   const username = useSelector((state) => state.auth.username);
 
@@ -31,7 +29,7 @@ const Navbar = () => {
   const openDrawerHandler = () => {
     setDrawerClass(classes.mobileNavOpen);
     setBackdropClass(classes.backdropOpen);
-    console.log("classes updated ")
+    console.log("classes updated ");
   };
 
   const closeDrawerHandler = () => {
@@ -43,10 +41,15 @@ const Navbar = () => {
     <section>
       <div onClick={closeDrawerHandler} className={backdropClass}></div>
       <header className={classes.header}>
+        <div className={classes.logoDesktop}>Car-Auctions</div>
         <div className={classes.hamburgerAndLogo}>
-          <MenuRoundedIcon onClick={openDrawerHandler} fontSize="large" className={classes.hamburger} />
+          <MenuRoundedIcon
+            onClick={openDrawerHandler}
+            fontSize="large"
+            className={classes.hamburger}
+          />
           <Link href="/">
-            <div className={classes.logo}>Car-Auctions</div>
+            <div className={classes.logoMobile}>Car-Auctions</div>
           </Link>
         </div>
         <nav className={classes.desktopNav}>

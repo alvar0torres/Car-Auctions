@@ -9,7 +9,15 @@
   box-shadow: 0px 2px 5px 0px black;
 }
 
-.logo {
+.logoDesktop {
+  font-size: 2rem;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logoMobile {
+  display: none;
   font-size: 2rem;
   color: white;
   font-weight: bold;
@@ -17,7 +25,7 @@
 }
 
 .hamburgerAndLogo {
-  display: flex;
+  display: none;
   align-items: center;
 }
 
@@ -98,6 +106,16 @@
 
 
 @media (max-width: 40rem) {
+  .logoMobile {
+    display: block;
+  }
+  .logoDesktop {
+    display: none;
+  }
+  .hamburgerAndLogo {
+    display: flex;
+    align-items: center;
+  }
   .desktopNav {
     display: none;
   }
