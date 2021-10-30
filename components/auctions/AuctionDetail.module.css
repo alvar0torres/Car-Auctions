@@ -14,15 +14,15 @@
   overflow: hidden;
 }
 
-.auctionCardGrid {
+.auctionCardGridClosed {
   width: 100%;
   display: grid;
   grid-template-areas:
     "model model"
     "description description"
     "price price"
-    "input ownerAndTime"
-    "input ownerAndTime";
+    "ownerAndTimeOrResult ownerAndTimeOrResult"
+    "ownerAndTimeOrResult ownerAndTimeOrResult";
 
   grid-template-columns: 1fr 1fr;
   grid-gap: 2px;
@@ -34,6 +34,29 @@
   justify-items: center;
   text-align: center;
 }
+
+.auctionCardGridActive {
+  width: 100%;
+  display: grid;
+  grid-template-areas:
+    "model model"
+    "description description"
+    "price price"
+    "input ownerAndTimeOrResult"
+    "input ownerAndTimeOrResult";
+
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 2px;
+  padding-left: 2rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+  align-items: center;
+  justify-items: center;
+  text-align: center;
+}
+
+
 
 .auctionCardGrid h1 {
   padding: 0;
@@ -109,8 +132,8 @@
   font-size: 2rem;
 }
 
-.ownerAndTime {
-  grid-area: ownerAndTime;
+.ownerAndTimeOrResult {
+  grid-area: ownerAndTimeOrResult;
   display: grid;
   grid-gap: 20px;
   justify-content: center;
@@ -124,6 +147,10 @@
   font-weight: bold;
 }
 
+.lastBidder {
+  font-weight: bold;
+}
+
 .favoriteBtn {
   position: absolute;
   right: 1rem;
@@ -132,9 +159,10 @@
   cursor: pointer;
 }
 
-.favoriteBtn:hover {
+.favoriteBtn:hover,
+.favoriteBtn:active {
   transform: scale(1.15);
-  box-shadow: 1px 1px 1px 1px rgb(156, 154, 154);
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
   cursor: pointer;
 }
 

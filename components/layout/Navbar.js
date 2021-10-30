@@ -21,6 +21,8 @@ const Navbar = () => {
   const username = useSelector((state) => state.auth.username);
 
   const logoutHandler = () => {
+    setDrawerClass(classes.mobileNav);
+    setBackdropClass(classes.backdrop);
     removeCookie("token");
     removeCookie("userId");
     dispatch(authActions.logout());
@@ -41,30 +43,27 @@ const Navbar = () => {
     <section>
       <div onClick={closeDrawerHandler} className={backdropClass}></div>
       <header className={classes.header}>
-        <div className={classes.logoDesktop}>Car-Auctions</div>
-        <div className={classes.hamburgerAndLogo}>
-          <MenuRoundedIcon
-            onClick={openDrawerHandler}
-            fontSize="large"
-            className={classes.hamburger}
-          />
-          <Link href="/">
-            <div className={classes.logoMobile}>Car-Auctions</div>
-          </Link>
-        </div>
+        <Link href="/">
+          <div className={classes.logo}>Car-Auctions</div>
+        </Link>
+        <MenuRoundedIcon
+          onClick={openDrawerHandler}
+          fontSize="large"
+          className={classes.hamburger}
+        />
         <nav className={classes.desktopNav}>
           <ul>
             {isLoggedIn && (
               <li>
                 <Link href="/new-auction">
-                  <Button variant="contained">New</Button>
+                  <Button className={classes.button} variant="contained">New</Button>
                 </Link>
               </li>
             )}
             {isLoggedIn && (
               <li>
                 <Link href="/">
-                  <Button onClick={logoutHandler} variant="contained">
+                  <Button className={classes.button} onClick={logoutHandler} variant="contained">
                     ({username}) Logout
                   </Button>
                 </Link>
@@ -73,14 +72,14 @@ const Navbar = () => {
             {!isLoggedIn && (
               <li>
                 <Link href="/login">
-                  <Button variant="contained">Login</Button>
+                  <Button className={classes.button} variant="contained">Login</Button>
                 </Link>
               </li>
             )}
             {!isLoggedIn && (
               <li>
                 <Link href="/sign-up">
-                  <Button variant="contained">Sign Up</Button>
+                  <Button className={classes.button} variant="contained">Sign Up</Button>
                 </Link>
               </li>
             )}
@@ -92,14 +91,14 @@ const Navbar = () => {
           {isLoggedIn && (
             <li className={classes.mobileNavItem}>
               <Link href="/new-auction">
-                <Button variant="contained">New</Button>
+                <Button className={classes.button} onClick={closeDrawerHandler} variant="contained">New</Button>
               </Link>
             </li>
           )}
           {isLoggedIn && (
             <li className={classes.mobileNavItem}>
               <Link href="/">
-                <Button onClick={logoutHandler} variant="contained">
+                <Button className={classes.button} onClick={logoutHandler} variant="contained">
                   ({username}) Logout
                 </Button>
               </Link>
@@ -108,14 +107,14 @@ const Navbar = () => {
           {!isLoggedIn && (
             <li className={classes.mobileNavItem}>
               <Link href="/login">
-                <Button variant="contained">Login</Button>
+                <Button className={classes.button} onClick={closeDrawerHandler} variant="contained">Login</Button>
               </Link>
             </li>
           )}
           {!isLoggedIn && (
             <li className={classes.mobileNavItem}>
               <Link href="/sign-up">
-                <Button variant="contained">Sign Up</Button>
+                <Button className={classes.button} onClick={closeDrawerHandler} variant="contained">Sign Up</Button>
               </Link>
             </li>
           )}

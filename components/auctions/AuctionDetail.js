@@ -30,8 +30,13 @@ const AuctionDetail = (props) => {
   const [lastBidder, setLastBidder] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
+  const [cardGridClasses, setCardGridClasses] = useState(
+    classes.auctionCardGridActive
+  );
   const auctionState = useSelector((state) =>
-    state.auctions.auctionList.find((auction) => auction.auctionId === router.query.auctionId)
+    state.auctions.auctionList.find(
+      (auction) => auction.auctionId === router.query.auctionId
+    )
   );
 
   useEffect(() => {
@@ -43,6 +48,7 @@ const AuctionDetail = (props) => {
         setLastBidder(auctionState.lastBidder);
       }
       setIsActive(false);
+      setCardGridClasses(classes.auctionCardGridClosed);
     }
   }, []);
 
@@ -186,39 +192,44 @@ const AuctionDetail = (props) => {
             src={props.auction.image}
             alt="car picture"
           />
-          <div className={classes.auctionCardGrid}>
+          <div className={cardGridClasses}>
             <h1 className={classes.model}>{props.auction.model}</h1>
             <div className={classes.description}>
               {props.auction.description}
             </div>
             <h1 className={priceClasses}>${props.auction.price}</h1>
-            {isActive && <form onSubmit={onBidHandler} className={classes.form}>
-              <TextField
-                inputRef={bidInput}
-                id="outlined-number"
-                label="$ Enter your bid"
-                type="number"
-                width="100%"
-                inputProps={{ min: 0, max: 100000000000000000 }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-              <Button type="submit" variant="contained">
-                BID
-              </Button>
-            </form>}
-            
-            <div className={classes.ownerAndTime}>
+            {isActive && (
+              <form onSubmit={onBidHandler} className={classes.form}>
+                <TextField
+                  inputRef={bidInput}
+                  id="outlined-number"
+                  label="$ Enter your bid"
+                  type="number"
+                  width="100%"
+                  inputProps={{ min: 0, max: 100000000000000000 }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                />
+                <Button type="submit" variant="contained">
+                  BID
+                </Button>
+              </form>
+            )}
+
+            <div className={classes.ownerAndTimeOrResult}>
               <div>
                 Owner:{" "}
                 <span className={classes.ownerSpan}>{props.auction.owner}</span>
               </div>
               {isClosed && <div>This auction ended with no bids</div>}
-              {isActive && <div>
-                Time left:{" "}
-                <span className={classes.timeLeftSpan}>{expirationDate}</span>
-              </div>}
+              {!isActive && !isClosed && <div>The winner is <span className={classes.lastBidder}>@{lastBidder}</span></div>}
+              {isActive && (
+                <div>
+                  Time left:{" "}
+                  <span className={classes.timeLeftSpan}>{expirationDate}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

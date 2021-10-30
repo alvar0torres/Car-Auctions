@@ -8,6 +8,8 @@ import { authActions } from "../store/authSlice";
 
 import AuctionList from "../components/auctions/AuctionList";
 
+import HomepageImage from "../components/ui/HomepageImage";
+
 const HomePage = ({ data }) => {
   const dispatch = useDispatch();
   const auctionList = useSelector((state) => state.auctions.auctionList);
@@ -18,7 +20,13 @@ const HomePage = ({ data }) => {
     dispatch(authActions.login({ token: data.token, userId: data.userId }));
   }
 
-  return <AuctionList auctions={auctionList} />;
+  return (
+    <section>
+      <HomepageImage />
+
+      <AuctionList auctions={auctionList} />
+    </section>
+  );
 };
 
 export default HomePage;
