@@ -2,18 +2,18 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const DUMMY_DATA = [
   {
-    model: "Mustang",
+    model: "Toyota pick-up",
     auctionId: "p1",
     expirationTime: "1537688340217",
     price: "1,000",
     description: "very nice and fast car. Blue color",
     active: true,
     owner: "s4vitar",
-    image: "https://images.barrons.com/im-133736?width=1280",
+    image: "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fgsat.jp%2Fwp-content%2Fuploads%2F2020%2F09%2FUsed-Toyota-Hilux-Pickup-2016-Automatic-2800CC-Seat-5-Door-4-RHD.43-1.jpeg",
     lastBidder: "",
   },
   {
-    model: "Red Car",
+    model: "Honda Civic black",
     auctionId: "p2",
     expirationTime: "1637288340217",
     price: "7,000",
@@ -22,10 +22,10 @@ const DUMMY_DATA = [
     owner: "alvar0torres",
     lastBidder: "",
     image:
-      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F4.bp.blogspot.com%2F-ZS5XB3SXLYs%2FTozDlwvnn1I%2FAAAAAAAAAKI%2FPx7xH6hVjTQ%2Fs1600%2Fold%2Bclassic%2Bcars%2Bfor%2Bcheap%2B5.jpg",
+      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fusedcars.honda.co.uk%2Fpicserver1%2Fuserdata%2F46%2F500176%2FYheRBoblFro%2Fxxl_kfz823891_dscf0007.jpg",
   },
   {
-    model: "Yellow",
+    model: "White Suv Bmw",
     auctionId: "p3",
     expirationTime: "1636888340217",
     price: "3,000",
@@ -34,22 +34,22 @@ const DUMMY_DATA = [
     owner: "perikillo0x",
     lastBidder: "",
     image:
-      "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2F2.bp.blogspot.com%2F-hrGuEwRgs0w%2FTnl4JgUtzNI%2FAAAAAAAAAAc%2FgDQ_G0gk7zo%2Fs1600%2Fclassic%2Bcars-3.jpg",
+      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fcarbazaar.co.ke%2Fwp-content%2Fuploads%2F2019%2F03%2FWhatsApp-Image-2019-01-08-at-4.34.48-PM-1.jpeg",
   },
   {
-    model: "Very Old",
+    model: "Jeep Rubicon",
     auctionId: "p4",
-    expirationTime: "1637188340217",
+    expirationTime: "1537188340217",
     price: "4,000",
     description: "very nice and fast car. Blue colo XXX4 r",
     active: true,
     owner: "alvar095",
-    lastBidder: "",
+    lastBidder: "alvar0torres",
     image:
-      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpictures.topspeed.com%2FIMG%2Fjpg%2F200606%2Fclassic-cars-definit.jpg",
+      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.selectjeeps.com%2Fimagetag%2F12634%2F29%2Fl%2FUsed-2011-Jeep-Wrangler-Rubicon.jpg",
   },
   {
-    model: "Fast One",
+    model: "Range Rover Red",
     auctionId: "p5",
     expirationTime: "1537348334217",
     price: "2,500",
@@ -58,7 +58,7 @@ const DUMMY_DATA = [
     owner: "alvar0uu",
     lastBidder: "",
     image:
-      "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Ffarm9.staticflickr.com%2F8028%2F7683757076_bb42241dc2.jpg",
+      "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimages.pexels.com%2Fphotos%2F225841%2Fpexels-photo-225841.jpeg%3Fauto%3Dcompress%26cs%3Dtinysrgb%26dpr%3D2%26h%3D650%26w%3D940&f=1&nofb=1",
   },
 ];
 

@@ -4,6 +4,8 @@ import Link from "next/link";
 import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
 import daysAndHours from "../../helpers/daysAndHoursConverter";
 
+import SimpleCard from "../ui/SimpleCard";
+
 import MaterialCard from "../ui/MaterialCard";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -39,16 +41,17 @@ const AuctionItem = (props) => {
   }, []);
 
   return (
-    <MaterialCard>
-      <Link href={`/auction/${props.id}`}>
-        <CardActionArea>
+    <Link href={`/auction/${props.id}`}>
+      <section className={classes.cardSection}>
+        <SimpleCard>
           <CardMedia
+            className={classes.image}
             component="img"
-            height="140"
+            height="200"
             image={props.image}
             alt="car picture"
           />
-          <CardContent>
+          <div className={classes.cardContent}>
             {isActive && <h3 className={classes.activeBadge}>ACTIVE</h3>}
             {!isActive && !isClosed && (
               <h3 className={classes.soldBadge}>SOLD</h3>
@@ -56,43 +59,31 @@ const AuctionItem = (props) => {
             {!isActive && isClosed && (
               <h3 className={classes.closedBadge}>CLOSED</h3>
             )}
-            <div>
-              <Typography gutterBottom variant="h5" component="div">
-                {props.model}
-              </Typography>
-              {isActive && (
-                <Typography gutterBottom component="div">
-                  Left: {expirationDate}
-                </Typography>
-              )}
-              {!isActive && !isClosed && (
-                <Typography gutterBottom component="div">
-                  The winner is @{lastBidder}
-                </Typography>
-              )}
-              {!isActive && isClosed && (
-                <Typography gutterBottom component="div">
-                  {lastBidder}
-                </Typography>
-              )}
-            </div>
-            <Typography
-              className={classes.price}
-              gutterBottom
-              variant="h5"
-              component="div"
-            >
-              ${props.price}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Link>
-      {/* <CardActions>
-        <Button size="small" color="primary">
-          Add to Watchlist
-        </Button>
-      </CardActions> */}
-    </MaterialCard>
+
+            <h1>
+              {props.model}
+            </h1>
+            {isActive && (
+              <div className={classes.timeLeftOrResult}>
+                Left: {expirationDate}
+              </div>
+            )}
+            {!isActive && !isClosed && (
+              <div className={classes.timeLeftOrResult}>
+                The winner is @{lastBidder}
+              </div>
+            )}
+            {!isActive && isClosed && (
+              <div className={classes.timeLeftOrResult}>
+                {lastBidder}
+              </div>
+            )}
+
+            <h1 className={classes.price}>${props.price}</h1>
+          </div>
+        </SimpleCard>
+      </section>
+    </Link>
   );
 };
 
