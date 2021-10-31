@@ -42,28 +42,29 @@ const Navbar = () => {
   return (
     <section>
       <div onClick={closeDrawerHandler} className={backdropClass}></div>
-      <header className={classes.header}>
+      <header className={classes.headerDesktop}>
         <Link href="/">
           <div className={classes.logo}>Car-Auctions</div>
         </Link>
-        <MenuRoundedIcon
-          onClick={openDrawerHandler}
-          fontSize="large"
-          className={classes.hamburger}
-        />
-        <nav className={classes.desktopNav}>
+        <nav>
           <ul>
             {isLoggedIn && (
               <li>
                 <Link href="/new-auction">
-                  <Button className={classes.button} variant="contained">New</Button>
+                  <Button className={classes.button} variant="contained">
+                    New
+                  </Button>
                 </Link>
               </li>
             )}
             {isLoggedIn && (
               <li>
                 <Link href="/">
-                  <Button className={classes.button} onClick={logoutHandler} variant="contained">
+                  <Button
+                    className={classes.button}
+                    onClick={logoutHandler}
+                    variant="contained"
+                  >
                     ({username}) Logout
                   </Button>
                 </Link>
@@ -72,54 +73,90 @@ const Navbar = () => {
             {!isLoggedIn && (
               <li>
                 <Link href="/login">
-                  <Button className={classes.button} variant="contained">Login</Button>
+                  <Button className={classes.button} variant="contained">
+                    Login
+                  </Button>
                 </Link>
               </li>
             )}
             {!isLoggedIn && (
               <li>
                 <Link href="/sign-up">
-                  <Button className={classes.button} variant="contained">Sign Up</Button>
+                  <Button className={classes.button} variant="contained">
+                    Sign Up
+                  </Button>
                 </Link>
               </li>
             )}
           </ul>
         </nav>
       </header>
-      <nav className={drawerClass}>
-        <ul className={classes.mobileNavButtons}>
-          {isLoggedIn && (
-            <li className={classes.mobileNavItem}>
-              <Link href="/new-auction">
-                <Button className={classes.button} onClick={closeDrawerHandler} variant="contained">New</Button>
-              </Link>
-            </li>
-          )}
-          {isLoggedIn && (
-            <li className={classes.mobileNavItem}>
-              <Link href="/">
-                <Button className={classes.button} onClick={logoutHandler} variant="contained">
-                  ({username}) Logout
-                </Button>
-              </Link>
-            </li>
-          )}
-          {!isLoggedIn && (
-            <li className={classes.mobileNavItem}>
-              <Link href="/login">
-                <Button className={classes.button} onClick={closeDrawerHandler} variant="contained">Login</Button>
-              </Link>
-            </li>
-          )}
-          {!isLoggedIn && (
-            <li className={classes.mobileNavItem}>
-              <Link href="/sign-up">
-                <Button className={classes.button} onClick={closeDrawerHandler} variant="contained">Sign Up</Button>
-              </Link>
-            </li>
-          )}
-        </ul>
-      </nav>
+      <header className={classes.headerMobile}>
+        <Link href="/">
+          <div className={classes.logo}>Car-Auctions</div>
+        </Link>
+        <MenuRoundedIcon
+          onClick={openDrawerHandler}
+          fontSize="large"
+          className={classes.hamburger}
+        />
+        <nav className={drawerClass}>
+          <ul className={classes.mobileNavButtons}>
+            {isLoggedIn && (
+              <li className={classes.mobileNavItem}>
+                <Link href="/new-auction">
+                  <Button
+                    className={classes.button}
+                    onClick={closeDrawerHandler}
+                    variant="contained"
+                  >
+                    New
+                  </Button>
+                </Link>
+              </li>
+            )}
+            {isLoggedIn && (
+              <li className={classes.mobileNavItem}>
+                <Link href="/">
+                  <Button
+                    className={classes.button}
+                    onClick={logoutHandler}
+                    variant="contained"
+                  >
+                    ({username}) Logout
+                  </Button>
+                </Link>
+              </li>
+            )}
+            {!isLoggedIn && (
+              <li className={classes.mobileNavItem}>
+                <Link href="/login">
+                  <Button
+                    className={classes.button}
+                    onClick={closeDrawerHandler}
+                    variant="contained"
+                  >
+                    Login
+                  </Button>
+                </Link>
+              </li>
+            )}
+            {!isLoggedIn && (
+              <li className={classes.mobileNavItem}>
+                <Link href="/sign-up">
+                  <Button
+                    className={classes.button}
+                    onClick={closeDrawerHandler}
+                    variant="contained"
+                  >
+                    Sign Up
+                  </Button>
+                </Link>
+              </li>
+            )}
+          </ul>
+        </nav>
+      </header>
     </section>
   );
 };
