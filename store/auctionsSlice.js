@@ -64,8 +64,11 @@ const DUMMY_DATA = [
 
 const auctionsSlice = createSlice({
   name: "auctions",
-  initialState: { auctionList: DUMMY_DATA },
+  initialState: { auctionList: [] },
   reducers: {
+    toggleList(state, action) {
+      state.auctionList = action.payload;
+    },
     addAuction(state, action) {
       const newAuction = action.payload;
       state.auctionList.push(newAuction);

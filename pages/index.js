@@ -1,10 +1,13 @@
 // our-domain.com/
 
+import { useEffect } from "react";
+
 import { parseCookies } from "../helpers/";
 
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { authActions } from "../store/authSlice";
+import { auctionsActions } from "../store/auctionsSlice";
 
 import AuctionList from "../components/auctions/AuctionList";
 
@@ -19,6 +22,24 @@ const HomePage = ({ data }) => {
   } else {
     dispatch(authActions.login({ token: data.token, userId: data.userId }));
   }
+
+  useEffect(() => {
+    fetch(
+      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions.json"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        let list = [];
+
+        if (data != null) {
+          for (const value of Object.values(data)) {
+            list.push(value);
+          }
+        }
+
+        dispatch(auctionsActions.toggleList(list));
+      });
+  }, [dispatch]);
 
   return (
     <section>
