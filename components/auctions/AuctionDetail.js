@@ -8,9 +8,11 @@ import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { auctionsActions } from "../../store/auctionsSlice";
-import { favouriteActions } from "../../store/favouriteSlice";
 import { alertActions } from "../../store/alertSlice";
-import { authActions } from "../../store/authSlice";
+import { useCookies } from "react-cookie";
+
+import { ref, update, remove, set } from "firebase/database";
+import database from "../../firebase/firebase";
 
 import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
 import daysAndHours from "../../helpers/daysAndHoursConverter";
@@ -23,13 +25,16 @@ const AuctionDetail = (props) => {
   const router = useRouter();
   const bidInput = useRef();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const userId = useSelector((state) => state.auth.userId);
-  const username = useSelector((state) => state.auth.username);
-  const favourites = useSelector((state) => state.favourites.favouritesList);
+  // const userId = useSelector((state) => state.auth.userId);
+  // const username = useSelector((state) => state.auth.username);
   const [favourite, setFavourite] = useState(false);
   const [lastBidder, setLastBidder] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
+  const [cookie, setCookie, removeCookie] = useCookies();
+  const userId = cookie.userId;
+  const username = cookie.username;
+  const [price, setPrice] = useState(props.auction.price);
   const [cardGridClasses, setCardGridClasses] = useState(
     classes.auctionCardGridActive
   );
@@ -53,22 +58,25 @@ const AuctionDetail = (props) => {
   }, []);
 
   useEffect(() => {
-    let existingFavourite = null;
-
-    if (favourites.length > 0) {
-      existingFavourite = favourites.findIndex(
-        (favourite) =>
-          favourite.userId === userId &&
-          favourite.auctionId === router.query.auctionId
-      );
-    }
-
-    if (existingFavourite != null && existingFavourite >= 0) {
-      setFavourite(true);
-    } else {
-      setFavourite(false);
-    }
-  });
+    fetch(
+      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites.json"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data != null) {
+          for (const [key, value] of Object.entries(data)) {
+            console.log(value);
+            if (
+              (value.auctionId =
+                router.query.auctionId && value.userId === userId)
+            ) {
+              console.log("Setting favourite to true...");
+              setFavourite(true);
+            }
+          }
+        }
+      });
+  }, []);
 
   const priceClasses = `${classes.price} ${
     priceIsHighlighted ? classes.bump : ""
@@ -104,18 +112,34 @@ const AuctionDetail = (props) => {
     } else if (
       bidInput.current.value > parseFloat(props.auction.price.replace(/,/g, ""))
     ) {
-      dispatch(
-        auctionsActions.bid({
-          auctionId: auctionId,
-          bid: parseInt(bidInput.current.value).toLocaleString("en-US"),
-          username: username,
-        })
-      );
-      bidInput.current.value = "";
+      //Setting price so that change is displayed in-page
       setPriceIsHighlighted(true);
       setTimeout(() => {
         setPriceIsHighlighted(false);
       }, 300);
+      setPrice(parseInt(bidInput.current.value).toLocaleString("en-US"));
+      //Dispatching change to redux so that the new value is displayed automatically.
+      // dispatch(
+      //   auctionsActions.bid({
+      //     auctionId: auctionId,
+      //     bid: parseInt(bidInput.current.value).toLocaleString("en-US"),
+      //     username: username,
+      //   })
+      // );
+
+      //Updating price and last bidder in database:
+      function addBid(bid, username) {
+        const updates = {};
+        updates["/auctions/" + auctionId + "/price/"] = bid;
+        updates["/auctions/" + auctionId + "/lastBidder/"] = username;
+        bidInput.current.value = "";
+        return update(ref(database), updates);
+      }
+
+      addBid(
+        parseInt(bidInput.current.value).toLocaleString("en-US"),
+        username
+      );
     } else {
       dispatch(
         alertActions.error("Your bid needs to be higher than current price")
@@ -125,6 +149,33 @@ const AuctionDetail = (props) => {
       }, 5000);
     }
   };
+
+  function addFav() {
+    const favData = {
+      auctionId: router.query.auctionId,
+      userId: userId,
+    };
+
+    console.log("FavData is.... " + JSON.stringify(favData));
+
+    fetch(
+      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites.json",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(favData),
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
   const onFavouriteHandler = () => {
     if (!isLoggedIn) {
@@ -138,12 +189,39 @@ const AuctionDetail = (props) => {
       }, 5000);
       return;
     }
-    dispatch(
-      favouriteActions.addOrRemoveFav({
-        userId: userId,
-        auctionId: router.query.auctionId,
-      })
-    );
+
+    // Getting favourites list from database:
+    setFavourite(!favourite);
+    fetch(
+      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites.json"
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data != null) {
+          let counter = 0;
+          for (const [key, value] of Object.entries(data)) {
+            console.log(value);
+            if (
+              value.auctionId === router.query.auctionId &&
+              value.userId === userId
+            ) {
+              console.log("Coincidence found! Removing item...");
+              remove(ref(database, "favourites/" + key));
+            } else {
+              console.log("No coincidence found for this one");
+              counter++;
+            }
+
+            if (counter === Object.keys(data).length) {
+              ///// Adding Favourite to Database /////////
+              addFav();
+            }
+          }
+        } else {
+          ///// Adding Favourite to Database /////////
+          addFav();
+        }
+      });
   };
 
   return (
@@ -197,7 +275,7 @@ const AuctionDetail = (props) => {
             <div className={classes.description}>
               {props.auction.description}
             </div>
-            <h1 className={priceClasses}>${props.auction.price}</h1>
+            <h1 className={priceClasses}>${price}</h1>
             {isActive && (
               <form onSubmit={onBidHandler} className={classes.form}>
                 <TextField
@@ -223,7 +301,12 @@ const AuctionDetail = (props) => {
                 <span className={classes.ownerSpan}>{props.auction.owner}</span>
               </div>
               {isClosed && <div>This auction ended with no bids</div>}
-              {!isActive && !isClosed && <div>The winner is <span className={classes.lastBidder}>@{lastBidder}</span></div>}
+              {!isActive && !isClosed && (
+                <div>
+                  The winner is{" "}
+                  <span className={classes.lastBidder}>@{lastBidder}</span>
+                </div>
+              )}
               {isActive && (
                 <div>
                   Time left:{" "}

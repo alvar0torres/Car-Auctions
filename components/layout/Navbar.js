@@ -8,24 +8,31 @@ import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import Button from "@mui/material/Button";
 
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import classes from "./Navbar.module.css";
 
 const Navbar = () => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const [cookie, setCookie, removeCookie] = useCookies();
   const [drawerClass, setDrawerClass] = useState(classes.mobileNav);
   const [backdropClass, setBackdropClass] = useState(classes.backdrop);
 
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const username = useSelector((state) => state.auth.username);
+  const username = cookie.username;
+  
 
-  const logoutHandler = () => {
+  const logoutHandler = (event) => {
+    event.preventDefault();
     setDrawerClass(classes.mobileNav);
     setBackdropClass(classes.backdrop);
-    removeCookie("token");
-    removeCookie("userId");
+    removeCookie("token", { path: '/' });
+    removeCookie("userId", { path: '/' });
+    removeCookie("expirationTime", { path: '/' });
+    removeCookie("username", { path: '/' });
     dispatch(authActions.logout());
+    router.push(`/`);
   };
 
   const openDrawerHandler = () => {
@@ -65,7 +72,7 @@ const Navbar = () => {
                     onClick={logoutHandler}
                     variant="contained"
                   >
-                    ({username}) Logout
+                    ({cookie.username}) Logout
                   </Button>
                 </Link>
               </li>

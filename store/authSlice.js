@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: { token: "", isLoggedIn: false, userId: "", username: "" },
+  initialState: { token: "", isLoggedIn: false, userId: ""},
   reducers: {
     login(state, action) {
       state.token = action.payload.token;
@@ -11,15 +11,10 @@ const authSlice = createSlice({
 
       console.log("state updated, logged in");
     },
-    updateUsername(state, action) {
-      state.username = action.payload;
-    },
     logout(state) {
       state.token = "";
       state.isLoggedIn = false;
       state.userId = "";
-      state.username = "";
-
       console.log("logged out");
     },
   },

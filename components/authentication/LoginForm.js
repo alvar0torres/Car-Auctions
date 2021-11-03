@@ -98,15 +98,22 @@ const LoginForm = () => {
               for (const value of Object.values(data)) {
                 if (value.userId === id) {
                   username = value.username;
-                  dispatch(authActions.updateUsername(username));
+
+                  setCookie("username", username, {
+                    path: "/",
+                    maxAge: 3600, // Expires after 1hr
+                    sameSite: true,
+                  });
                 }
               }
             }
 
-            router.push(`/`);
+            
 
             emailInput.current.value = "";
             passwordInput.current.value = "";
+
+            router.push(`/`);
 
             dispatch(alertActions.success("Welcome back, " + username + "!"));
             setTimeout(() => {

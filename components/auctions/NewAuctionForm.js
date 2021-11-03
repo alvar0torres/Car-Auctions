@@ -116,9 +116,9 @@ const NewAuctionForm = () => {
           // dispatch(auctionsActions.addAuction(newAuctionData));
 
           fetch(
-            "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions.json",
+            `https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions/${newAuctionData.auctionId}.json`,
             {
-              method: "POST",
+              method: "PUT",
               headers: {
                 "Content-Type": "application/json",
               },
