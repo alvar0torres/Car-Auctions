@@ -63,11 +63,11 @@ const AuctionDetail = (props) => {
       .then((response) => response.json())
       .then((data) => {
         if (data != null) {
-          for (const [key, value] of Object.entries(data)) {
+          for (const value of Object.values(data)) {
             console.log(value);
             if (
-              (value.auctionId =
-                router.query.auctionId && value.userId === userId)
+              value.auctionId === router.query.auctionId &&
+              value.userId === userId
             ) {
               console.log("Setting favourite to true...");
               setFavourite(true);

@@ -1,6 +1,7 @@
 import SimpleCard from "../../components/ui/SimpleCard";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/router";
@@ -15,6 +16,7 @@ const NewAuctionForm = () => {
   const username = cookie.username;
   const router = useRouter();
   const [image, setImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const inputModel = useRef();
   const inputDescription = useRef();
@@ -57,6 +59,7 @@ const NewAuctionForm = () => {
       "state_changed",
       (snapshot) => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        setIsUploading(true);
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         console.log("Upload is " + progress + "% done");
@@ -126,12 +129,14 @@ const NewAuctionForm = () => {
             .then((response) => response.json())
             .then((data) => {
               console.log("Success:", data);
+              setIsUploading(false);
+              router.push(`/`);
             })
             .catch((error) => {
               console.error("Error:", error);
             });
 
-          router.push(`/`);
+          
         });
       }
     );
@@ -180,9 +185,10 @@ const NewAuctionForm = () => {
             Upload Image
             <input type="file" accept="image/*" onChange={handleImageChange} />
           </div>
-          <Button className={classes.input} type="submit" variant="contained">
+          {!isUploading && <Button className={classes.input} type="submit" variant="contained">
             Submit
-          </Button>
+          </Button>}
+          {isUploading && <CircularProgress className={classes.progress}/>}
         </form>
       </SimpleCard>
     </section>

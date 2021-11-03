@@ -18,3 +18,7 @@
   grid-gap: 10px;
   text-align: left;
 }
+
+.progress {
+  justify-self: center;
+}
