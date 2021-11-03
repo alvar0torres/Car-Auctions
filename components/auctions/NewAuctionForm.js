@@ -3,20 +3,18 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
 import { useRef, useState } from "react";
-import { auctionsActions } from "../../store/auctionsSlice";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
+import { useCookies } from "react-cookie";
 
 import classes from "./NewAuctionForm.module.css";
 import { storage } from "../../firebase/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const NewAuctionForm = () => {
+  const [cookie, setCookie, removeCookie] = useCookies();
+  const username = cookie.username;
   const router = useRouter();
-  const dispatch = useDispatch();
   const [image, setImage] = useState(null);
-  const username = useSelector((state) => state.auth.username);
 
   const inputModel = useRef();
   const inputDescription = useRef();

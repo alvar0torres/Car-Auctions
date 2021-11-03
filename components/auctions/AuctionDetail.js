@@ -7,7 +7,6 @@ import TextField from "@mui/material/TextField";
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
-import { auctionsActions } from "../../store/auctionsSlice";
 import { alertActions } from "../../store/alertSlice";
 import { useCookies } from "react-cookie";
 
