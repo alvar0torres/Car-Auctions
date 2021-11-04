@@ -1,19 +1,28 @@
 import { useRef, useState } from "react";
+import { useRouter } from "next/router";
 
 import SimpleCard from "../../components/ui/SimpleCard";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+
+import { alertActions } from "../../store/alertSlice";
+import { useDispatch } from "react-redux";
 
 import classes from "./SignupForm.module.css";
 
 const SignupForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const dispatch = useDispatch();
   const emailInput = useRef();
   const passwordInput = useRef();
   const usernameInput = useRef();
-  const [error, setError] = useState(null);
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
+
+    setIsLoading(true);
 
     const enteredData = {
       email: emailInput.current.value,
@@ -40,13 +49,31 @@ const SignupForm = () => {
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {
+          let message = null;
           console.log(data.error.message);
-          setError(data.error.message);
+
+          if (data.error.message === "EMAIL_EXISTS") {
+            message = "The email address is already in use by another account.";
+          } else if (data.error.message === "OPERATION_NOT_ALLOWED") {
+            message = "Password sign-in is disabled for this project.";
+          } else if (data.error.message === "TOO_MANY_ATTEMPTS_TRY_LATER") {
+            message =
+              "We have blocked all requests from this device due to unusual activity. Try again later.";
+          } else if (data.error.message === "WEAK_PASSWORD") {
+            message = "Password should be at least 6 characters";
+          }
+
+          dispatch(alertActions.error(message || data.error.message));
+          setTimeout(() => {
+            dispatch(alertActions.close());
+          }, 5000);
+          setIsLoading(false);
+          return;
         }
 
         const IdAndUsername = { userId: data.localId, username: username };
 
-        return fetch(
+        fetch(
           `https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/users.json`,
           {
             method: "POST",
@@ -59,6 +86,14 @@ const SignupForm = () => {
           .then((response) => response.json())
           .then((data) => {
             console.log("Success:", data);
+
+            dispatch(alertActions.success("Account succesfully created! You can now log in."));
+            setTimeout(() => {
+              dispatch(alertActions.close());
+            }, 5000);
+
+            setIsLoading(false);
+            router.push(`/login`);
           })
           .catch((error) => {
             console.error("Error:", error);
@@ -75,6 +110,7 @@ const SignupForm = () => {
         <form onSubmit={onSubmitHandler} className={classes.form}>
           <h1>Sign Up</h1>
           <TextField
+            required
             inputRef={emailInput}
             id="outlined-basic"
             label="E-mail"
@@ -82,6 +118,7 @@ const SignupForm = () => {
             variant="outlined"
           />
           <TextField
+            required
             inputRef={usernameInput}
             id="outlined-basic"
             label="Username"
@@ -89,15 +126,17 @@ const SignupForm = () => {
             variant="outlined"
           />
           <TextField
+            required
             inputRef={passwordInput}
             id="outlined-basic"
             label="Password"
             type="password"
             variant="outlined"
           />
-          <Button type="submit" variant="contained">
+          {!isLoading && <Button type="submit" variant="contained">
             Submit
-          </Button>
+          </Button>}
+          {isLoading && <CircularProgress className={classes.progress}/>}
         </form>
       </SimpleCard>
     </section>

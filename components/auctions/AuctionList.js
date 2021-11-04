@@ -13,6 +13,7 @@ const AuctionList = (props) => {
             price={auction.price}
             image={auction.image}
             id={auction.auctionId}
+            lastBidder={auction.lastBidder}
           />
         </li>
       ))}

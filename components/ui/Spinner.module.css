@@ -1,0 +1,10 @@
+.progressDiv {
+    display: grid;
+    grid-template-columns: 1fr;
+    padding-top: 2rem;
+    text-align: center;
+}
+
+.progress {
+  justify-self: center;
+}

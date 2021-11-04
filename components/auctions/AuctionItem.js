@@ -1,23 +1,15 @@
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import Link from "next/link";
 import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
 import daysAndHours from "../../helpers/daysAndHoursConverter";
 
 import SimpleCard from "../ui/SimpleCard";
 
-import MaterialCard from "../ui/MaterialCard";
-import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { Button, CardActionArea, CardActions } from "@mui/material";
 
 import classes from "./AuctionItem.module.css";
 
 const AuctionItem = (props) => {
-  const auctionState = useSelector((state) =>
-    state.auctions.auctionList.find((auction) => auction.auctionId === props.id)
-  );
   const [lastBidder, setLastBidder] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
@@ -30,11 +22,11 @@ const AuctionItem = (props) => {
 
   useEffect(() => {
     if (remainingTimeinMs < 0) {
-      if (auctionState.lastBidder === "") {
+      if (props.lastBidder === "") {
         setLastBidder("This auction ended with no bids");
         setIsClosed(true);
       } else {
-        setLastBidder(auctionState.lastBidder);
+        setLastBidder(props.lastBidder);
       }
       setIsActive(false);
     }

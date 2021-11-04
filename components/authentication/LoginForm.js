@@ -8,21 +8,24 @@ import { useCookies } from "react-cookie";
 import SimpleCard from "../../components/ui/SimpleCard";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import classes from "./LoginForm.module.css";
 
 const LoginForm = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const [cookie, setCookie] = useCookies();
 
   const emailInput = useRef();
   const passwordInput = useRef();
-  
 
   const dispatch = useDispatch();
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
+
+    setIsLoading(true);
 
     const loginData = {
       email: emailInput.current.value,
@@ -66,6 +69,8 @@ const LoginForm = () => {
           setTimeout(() => {
             dispatch(alertActions.close());
           }, 5000);
+          
+          setIsLoading(false);
           return;
         }
 
@@ -108,11 +113,10 @@ const LoginForm = () => {
               }
             }
 
-            
-
             emailInput.current.value = "";
             passwordInput.current.value = "";
 
+            setIsLoading(false);
             router.push(`/`);
 
             dispatch(alertActions.success("Welcome back, " + username + "!"));
@@ -145,9 +149,12 @@ const LoginForm = () => {
             type="password"
             variant="outlined"
           />
-          <Button type="submit" variant="contained">
-            Submit
-          </Button>
+          {!isLoading && (
+            <Button type="submit" variant="contained">
+              Submit
+            </Button>
+          )}
+          {isLoading && <CircularProgress className={classes.progress} />}
         </form>
       </SimpleCard>
     </section>

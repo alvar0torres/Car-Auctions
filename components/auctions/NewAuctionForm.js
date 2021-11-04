@@ -6,12 +6,15 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookies } from "react-cookie";
+import { useDispatch } from "react-redux";
+import { alertActions } from "../../store/alertSlice";
 
 import classes from "./NewAuctionForm.module.css";
 import { storage } from "../../firebase/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const NewAuctionForm = () => {
+  const dispatch = useDispatch();
   const [cookie, setCookie, removeCookie] = useCookies();
   const username = cookie.username;
   const router = useRouter();
@@ -29,7 +32,7 @@ const NewAuctionForm = () => {
   const currentDate = new Date();
   const mins = ("0" + currentDate.getMinutes()).slice(-2);
   const time = currentDate.getHours() + ":" + mins;
-  const cDay = currentDate.getDate();
+  const cDay = ("0" + currentDate.getDate()).slice(-2);
   const cMonth = currentDate.getMonth() + 1;
   const cYear = currentDate.getFullYear();
 
@@ -45,12 +48,26 @@ const NewAuctionForm = () => {
   const onSubmitHandler = (event) => {
     event.preventDefault();
 
+    if (image === null) {
+      dispatch(alertActions.error("Please, choose a valid image."));
+      setTimeout(() => {
+        dispatch(alertActions.close());
+      }, 5000);
+      return;
+    }
+
     const expirationDate = new Date(inputDateTime.current.value);
     const expirationDateInMs = expirationDate.getTime();
 
     const storageRef = ref(storage, `${image.name}`);
     const uploadTask = uploadBytesResumable(storageRef, image);
+
     if (!image.name.match(/\.(jpg|jpeg|png|gif)$/)) {
+      dispatch(alertActions.error("Please, choose a valid image."));
+      setTimeout(() => {
+        dispatch(alertActions.close());
+      }, 5000);
+
       console.log("select valid image.");
       uploadTask.cancel();
       return;
@@ -135,8 +152,6 @@ const NewAuctionForm = () => {
             .catch((error) => {
               console.error("Error:", error);
             });
-
-          
         });
       }
     );
@@ -150,18 +165,25 @@ const NewAuctionForm = () => {
         <form onSubmit={onSubmitHandler} className={classes.form}>
           <h1>New Auction</h1>
           <TextField
+            required
             inputRef={inputModel}
             id="outlined-basic"
             label="Model"
             variant="outlined"
           />
           <TextField
+            required
             inputRef={inputDescription}
-            id="outlined-basic"
-            label="Description"
-            variant="outlined"
+            // id="outlined-basic"
+            // label="Description"
+            // variant="outlined"
+            id="outlined-multiline-static"
+            label="Description..."
+            multiline
+            rows={4}
           />
           <TextField
+            required
             inputRef={inputPrice}
             id="outlined-number"
             label="$ Price"
@@ -171,6 +193,7 @@ const NewAuctionForm = () => {
             }}
           />
           <TextField
+            required
             inputRef={inputDateTime}
             id="datetime-local"
             label="Ending Date"
@@ -185,10 +208,12 @@ const NewAuctionForm = () => {
             Upload Image
             <input type="file" accept="image/*" onChange={handleImageChange} />
           </div>
-          {!isUploading && <Button className={classes.input} type="submit" variant="contained">
-            Submit
-          </Button>}
-          {isUploading && <CircularProgress className={classes.progress}/>}
+          {!isUploading && (
+            <Button className={classes.input} type="submit" variant="contained">
+              Submit
+            </Button>
+          )}
+          {isUploading && <CircularProgress className={classes.progress} />}
         </form>
       </SimpleCard>
     </section>
