@@ -24,8 +24,6 @@ const AuctionDetail = (props) => {
   const router = useRouter();
   const bidInput = useRef();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  // const userId = useSelector((state) => state.auth.userId);
-  // const username = useSelector((state) => state.auth.username);
   const [favourite, setFavourite] = useState(false);
   const [lastBidder, setLastBidder] = useState("");
   const [isActive, setIsActive] = useState(true);
@@ -37,19 +35,14 @@ const AuctionDetail = (props) => {
   const [cardGridClasses, setCardGridClasses] = useState(
     classes.auctionCardGridActive
   );
-  const auctionState = useSelector((state) =>
-    state.auctions.auctionList.find(
-      (auction) => auction.auctionId === router.query.auctionId
-    )
-  );
 
   useEffect(() => {
     if (remainingTimeinMs < 0) {
-      if (auctionState.lastBidder === "") {
+      if (props.auction.lastBidder === "") {
         setLastBidder("This auction ended with no bids");
         setIsClosed(true);
       } else {
-        setLastBidder(auctionState.lastBidder);
+        setLastBidder(props.auction.lastBidder);
       }
       setIsActive(false);
       setCardGridClasses(classes.auctionCardGridClosed);
@@ -117,14 +110,6 @@ const AuctionDetail = (props) => {
         setPriceIsHighlighted(false);
       }, 300);
       setPrice(parseInt(bidInput.current.value).toLocaleString("en-US"));
-      //Dispatching change to redux so that the new value is displayed automatically.
-      // dispatch(
-      //   auctionsActions.bid({
-      //     auctionId: auctionId,
-      //     bid: parseInt(bidInput.current.value).toLocaleString("en-US"),
-      //     username: username,
-      //   })
-      // );
 
       //Updating price and last bidder in database:
       function addBid(bid, username) {
