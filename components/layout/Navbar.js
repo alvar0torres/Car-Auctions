@@ -105,7 +105,9 @@ const Navbar = () => {
           <ul className={classes.middleButtons}>
             {!isLoggedIn && (
               <Link href="/sign-up">
-                <li id={classes.joinNow} className={joinBtnClass}>Join Now</li>
+                <li id={classes.joinNow} className={joinBtnClass}>
+                  Join Now
+                </li>
               </Link>
             )}
             {isLoggedIn && (
@@ -198,39 +200,13 @@ const Navbar = () => {
         />
         <nav className={drawerClass}>
           <ul className={classes.mobileNavButtons}>
-            {isLoggedIn && (
-              <li className={classes.mobileNavItem}>
-                <Link href="/new-auction">
-                  <Button
-                    className={classes.button}
-                    onClick={closeDrawerHandler}
-                    variant="contained"
-                  >
-                    New
-                  </Button>
-                </Link>
-              </li>
-            )}
-            {isLoggedIn && (
-              <li className={classes.mobileNavItem}>
-                <Link href="/">
-                  <Button
-                    className={classes.button}
-                    onClick={logoutHandler}
-                    variant="contained"
-                  >
-                    ({username}) Logout
-                  </Button>
-                </Link>
-              </li>
-            )}
             {!isLoggedIn && (
               <li className={classes.mobileNavItem}>
                 <Link href="/login">
                   <Button
                     className={classes.button}
-                    onClick={closeDrawerHandler}
                     variant="contained"
+                    onClick={closeDrawerHandler}
                   >
                     Login
                   </Button>
@@ -242,11 +218,97 @@ const Navbar = () => {
                 <Link href="/sign-up">
                   <Button
                     className={classes.button}
-                    onClick={closeDrawerHandler}
                     variant="contained"
+                    onClick={closeDrawerHandler}
                   >
                     Sign Up
-                    <hr></hr>
+                  </Button>
+                </Link>
+              </li>
+            )}
+            {isLoggedIn && (
+              <li className={classes.mobileNavItem}>
+                <Link href="/my-favourites">
+                  <Button
+                    className={classes.button}
+                    variant="contained"
+                    onClick={closeDrawerHandler}
+                  >
+                    My Favourites
+                  </Button>
+                </Link>
+              </li>
+            )}
+            <li className={classes.mobileNavItem}>
+              <Link href="/">
+                <Button
+                  className={classes.button}
+                  variant="contained"
+                  onClick={closeDrawerHandler}
+                >
+                  All Auctions
+                </Button>
+              </Link>
+            </li>
+            {isLoggedIn && (
+              <li className={classes.mobileNavItem}>
+                <Link href="/my-auctions">
+                  <Button
+                    className={classes.button}
+                    variant="contained"
+                    onClick={closeDrawerHandler}
+                  >
+                    My Auctions
+                  </Button>
+                </Link>
+              </li>
+            )}
+            {isLoggedIn && (
+              <li className={classes.mobileNavItem}>
+                <Link href="/new-auction">
+                  <Button
+                    className={classes.button}
+                    variant="contained"
+                    onClick={closeDrawerHandler}
+                  >
+                    <li className={sellCarBtnClass}>Sell My Car</li>
+                  </Button>
+                </Link>
+              </li>
+            )}
+            {!isLoggedIn && (
+              <li className={classes.mobileNavItem}>
+                <Link href="/sell-my-car">
+                  <Button
+                    className={classes.button}
+                    variant="contained"
+                    onClick={closeDrawerHandler}
+                  >
+                    Sell My Car
+                  </Button>
+                </Link>
+              </li>
+            )}
+            <li className={classes.mobileNavItem}>
+              <Link href="/contact-us">
+                <Button
+                  className={classes.button}
+                  variant="contained"
+                  onClick={closeDrawerHandler}
+                >
+                  Contact Us
+                </Button>
+              </Link>
+            </li>
+            {isLoggedIn && (
+              <li className={classes.mobileNavItem}>
+                <Link href="/">
+                  <Button
+                    className={classes.button}
+                    onClick={logoutHandler}
+                    variant="contained"
+                  >
+                    ({username}) Logout
                   </Button>
                 </Link>
               </li>

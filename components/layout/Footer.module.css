@@ -1,0 +1,9 @@
+.footer {
+  background-color: black;
+  min-height: 7rem;
+  color: white;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}

@@ -5,6 +5,8 @@ import { alertActions } from "../../store/alertSlice";
 
 import { useCookies } from "react-cookie";
 
+import Footer from "./Footer";
+
 import Navbar from "./Navbar";
 import Alert from "@mui/material/Alert";
 
@@ -32,7 +34,7 @@ const Layout = (props) => {
   };
 
   return (
-    <div>
+    <div className={classes.wholePage}>
       <Navbar />
       {alertState.showAlert && (
         <Alert
@@ -45,6 +47,7 @@ const Layout = (props) => {
         </Alert>
       )}
       <main className={classes.main}>{props.children}</main>
+      <Footer />
     </div>
   );
 };
