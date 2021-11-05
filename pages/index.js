@@ -13,11 +13,18 @@ import AuctionList from "../components/auctions/AuctionList";
 import Spinner from "../components/ui/Spinner";
 
 import HomepageImage from "../components/ui/HomepageImage";
+import Filter from "../components/filters/Filter";
+
+import filteringFunction from "../helpers/filteringFunction";
 
 const HomePage = ({ data }) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const auctionList = useSelector((state) => state.auctions.auctionList);
+  const allAuctions = useSelector((state) => state.auctions.auctionList);
+  const [filteredList, setFilteredList] = useState([]);
+
+  const [status, setStatus] = useState("");
+  const [priceRange, setPriceRange] = useState("");
 
   if (!data.token || !data.userId || !data.username || !data.expirationTime) {
     dispatch(authActions.logout());
@@ -42,16 +49,32 @@ const HomePage = ({ data }) => {
           }
         }
 
-        dispatch(auctionsActions.toggleList(list));
+        // dispatch(auctionsActions.toggleList(list));
+
+        //Filtering.
+        const filtered = filteringFunction(status, priceRange, list);
+        setFilteredList(filtered);
+
+        console.log("Status is: " + status);
+        console.log("PriceRange is: " + priceRange);
+
+
+
         setIsLoading(false);
       });
-  }, [dispatch]);
+  }, [status, priceRange]);
 
   return (
     <section>
       <HomepageImage />
+      <Filter
+        status={status}
+        setStatus={setStatus}
+        priceRange={priceRange}
+        setPriceRange={setPriceRange}
+      />
       {isLoading && <Spinner />}
-      <AuctionList auctions={auctionList} />
+      <AuctionList auctions={filteredList} />
     </section>
   );
 };
