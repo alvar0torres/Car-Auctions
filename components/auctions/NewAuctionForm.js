@@ -118,7 +118,6 @@ const NewAuctionForm = () => {
             expirationTime: expirationDateInMs,
             price: parseInt(inputPrice.current.value).toLocaleString("en-US"),
             description: inputDescription.current.value,
-            active: true,
             owner: username,
             image: downloadURL,
             lastBidder: "",
