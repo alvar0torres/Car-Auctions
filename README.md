@@ -25,6 +25,7 @@ https://car-auctions.vercel.app/
 * When an auction ends, the name of the user that placed the last bid is displayed as a winner
 * Filtering of results by auction state and price range
 * Contact us form
+* Full Responsive
 
 ## How to run it locally
 
@@ -37,4 +38,4 @@ https://car-auctions.vercel.app/
 It will install all the dependencies needed for this project.
 
 ### `npm run dev`
-It will launch the Next.js development server and the application will start running locally in the browser, normally on http://localhost:3000/
+It will launch the Next.js development server and the application will start running locally in the browser at http://localhost:3000/
