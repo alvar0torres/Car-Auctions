@@ -33,6 +33,7 @@ const LoginForm = () => {
       returnSecureToken: true,
     };
 
+    // Signing in user through Firebase
     fetch(
       "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAtfB7Tgz0D94hYlzsnrPoipQHWhCM_qKY",
       {
@@ -54,6 +55,7 @@ const LoginForm = () => {
           console.log(data.error.message);
           let message = null;
 
+          // Adapting error messages so they are easier to understand
           if (data.error.message === "INVALID_EMAIL") {
             message = "Please enter a valid e-mail address.";
           } else if (data.error.message === "EMAIL_NOT_FOUND") {
@@ -73,6 +75,8 @@ const LoginForm = () => {
           setIsLoading(false);
           return;
         }
+
+        // We store in cookies the user/session data:
 
         setCookie("token", JSON.stringify(data.idToken), {
           path: "/",

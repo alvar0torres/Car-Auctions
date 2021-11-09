@@ -1,7 +1,5 @@
 import AuctionItem from "./AuctionItem";
 
-import { useEffect } from "react";
-
 import classes from "./AuctionList.module.css";
 
 const AuctionList = (props) => {

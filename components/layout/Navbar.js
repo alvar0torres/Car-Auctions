@@ -3,14 +3,13 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/authSlice";
 import { useCookies } from "react-cookie";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import Button from "@mui/material/Button";
 
 import AccountMenu from "./AccountMenu";
-
-import Link from "next/link";
-import { useRouter } from "next/router";
 
 import classes from "./Navbar.module.css";
 
@@ -28,9 +27,13 @@ const Navbar = () => {
   const [contactBtnClass, setContactBtnClass] = useState(null);
   const currentPath = router.pathname;
 
+  // Checking in redux store if user is logged in.
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  // Getting username from cookies and storing it in a variable.
   const username = cookie.username;
 
+  // When dispatching the logout action, we also remove all the user cookies. This way, user will be kept logged out if refreshes the page.
   const logoutHandler = (event) => {
     event.preventDefault();
     setDrawerClass(classes.mobileNav);
@@ -46,7 +49,6 @@ const Navbar = () => {
   const openDrawerHandler = () => {
     setDrawerClass(classes.mobileNavOpen);
     setBackdropClass(classes.backdropOpen);
-    console.log("classes updated ");
   };
 
   const closeDrawerHandler = () => {
@@ -54,8 +56,7 @@ const Navbar = () => {
     setBackdropClass(classes.backdrop);
   };
 
-  console.log("la url query es: " + router.pathname);
-
+  // When clicking on a menu botton, we want to keep the button selected. So this Useffect checks the url route and assing the right class to the button.
   useEffect(() => {
     if (router.pathname.includes("my-favourites")) {
       setMenuBtnClass(classes.selectedBtn);

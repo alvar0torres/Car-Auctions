@@ -17,7 +17,9 @@ https://car-auctions.vercel.app/
 
 ## Functionalities/Features
 
+* Full Responsive
 * Login/Logout
+* Auto-Logout after 1h session
 * Create car auctions
 * Place bids on existing auctions
 * Add auction to favourites
@@ -25,7 +27,6 @@ https://car-auctions.vercel.app/
 * When an auction ends, the name of the user that placed the last bid is displayed as a winner
 * Filtering of results by auction state and price range
 * Contact us form
-* Full Responsive
 
 ## How to run it locally
 

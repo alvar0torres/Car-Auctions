@@ -31,8 +31,6 @@ const ContactForm = () => {
       date: currentDate,
     };
 
-    console.log(data);
-
     // Storing data in database
     fetch(
       `https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/contact.json`,

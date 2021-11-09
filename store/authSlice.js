@@ -11,14 +11,11 @@ const authSlice = createSlice({
       if (action.payload.username) {
         state.username = action.payload.username;
       }
-
-      console.log("state updated, logged in");
     },
     logout(state) {
       state.token = "";
       state.isLoggedIn = false;
       state.userId = "";
-      console.log("logged out");
     },
   },
 });

@@ -1,18 +1,19 @@
 // our-domain.com/sell-my-car
 
-import Button from "@mui/material/Button";
-
-import Link from "next/link";
-
-import { parseCookies } from "../../helpers";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/authSlice";
+import Link from "next/link";
+
+import Button from "@mui/material/Button";
+
+import { parseCookies } from "../../helpers";
 
 import classes from "../../styles/SellCarPage.module.css";
 
 const SellCarPage = ({ data }) => {
   const dispatch = useDispatch();
 
+  // Checking whether there are authentication cookies available or not. If available -> Login. Otherwise -> Logout.
   if (!data.token || !data.userId || !data.username || !data.expirationTime) {
     dispatch(authActions.logout());
   } else {

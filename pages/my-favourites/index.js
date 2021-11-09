@@ -1,22 +1,22 @@
 // our-domain.com/my-favourites
 
 import { useEffect, useState } from "react";
-
-import AuctionList from "../../components/auctions/AuctionList";
-
-import { parseCookies } from "../../helpers";
-
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/authSlice";
 import { useSelector } from "react-redux";
 
+import { parseCookies } from "../../helpers";
+
+import AuctionList from "../../components/auctions/AuctionList";
 import Spinner from "../../components/ui/Spinner";
+
 
 const Favourites = ({ data }) => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const [favourites, setFavourites] = useState([]);
 
+  // Checking whether there are authentication cookies available or not. If available -> Login. Otherwise -> Logout.
   if (!data.token || !data.userId || !data.username || !data.expirationTime) {
     dispatch(authActions.logout());
   } else {
@@ -39,11 +39,9 @@ const Favourites = ({ data }) => {
         if (data != null) {
           for (const value of Object.values(data)) {
             if (JSON.stringify(value.userId) === userId) {
-              console.log("Favorito encontrado!");
               favouritesIds.push(value.auctionId);
             }
           }
-          console.log("The list of favourites is: " + favouritesIds);
 
           // Getting the list of auctions, filtering favourites and adding to final array:
           fetch(
@@ -57,7 +55,6 @@ const Favourites = ({ data }) => {
                     favouriteAuctions.push(value);
                   }
                 }
-                console.log(favouriteAuctions);
                 setFavourites(favouriteAuctions);
                 setIsLoading(false);
               }

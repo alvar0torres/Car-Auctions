@@ -17,10 +17,8 @@ const favouriteSlice = createSlice({
 
       if (existingFavourite != null && existingFavourite >= 0) {
         state.favouritesList.splice(existingFavourite, 1);
-        console.log("Removed from favourites");
       } else {
         state.favouritesList.push(action.payload);
-        console.log("Added to favourites!");
       }
     },
   },

@@ -19,6 +19,7 @@ const MyAuctions = ({ data }) => {
   const [myAuctions, setMyAuctions] = useState([]);
   const [isEmpty, setIsEmpty] = useState(true);
 
+  // Checking whether there are authentication cookies available or not. If available -> Login. Otherwise -> Logout.
   if (!data.token || !data.userId || !data.username || !data.expirationTime) {
     dispatch(authActions.logout());
   } else {
@@ -45,7 +46,6 @@ const MyAuctions = ({ data }) => {
       .then((data) => {
         if (data != null) {
           for (const value of Object.values(data)) {
-            console.log(value);
             if (value.owner === username) {
               myAuctionsData.push(value);
             }

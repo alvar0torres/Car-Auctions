@@ -28,7 +28,6 @@ const NewAuctionForm = () => {
   const auctionId = Date.now();
 
   //Getting current formatted Date and Time timestamp to be used in the expirationTime input selector:
-
   const currentDate = new Date();
   const mins = ("0" + currentDate.getMinutes()).slice(-2);
   const time = currentDate.getHours() + ":" + mins;
@@ -39,6 +38,7 @@ const NewAuctionForm = () => {
   const currentFormattedDateTime =
     cYear + "-" + cMonth + "-" + cDay + "T" + time;
 
+  // Storing uploaded image in a state
   const handleImageChange = (e) => {
     if (e.target.files[0]) {
       setImage(e.target.files[0]);
@@ -48,6 +48,7 @@ const NewAuctionForm = () => {
   const onSubmitHandler = (event) => {
     event.preventDefault();
 
+    // Checking if a file has been selected
     if (image === null) {
       dispatch(alertActions.error("Please, choose a valid image."));
       setTimeout(() => {
@@ -62,13 +63,14 @@ const NewAuctionForm = () => {
     const storageRef = ref(storage, `${image.name}`);
     const uploadTask = uploadBytesResumable(storageRef, image);
 
+    // Checking if the file is a valid image. If not, displaying error message.
     if (!image.name.match(/\.(jpg|jpeg|png|gif)$/)) {
       dispatch(alertActions.error("Please, choose a valid image."));
       setTimeout(() => {
         dispatch(alertActions.close());
       }, 5000);
 
-      console.log("select valid image.");
+      // Cancelling the upload if not valid.
       uploadTask.cancel();
       return;
     }
@@ -110,7 +112,6 @@ const NewAuctionForm = () => {
       () => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log("File available at", downloadURL);
 
           const newAuctionData = {
             model: inputModel.current.value,
@@ -123,14 +124,12 @@ const NewAuctionForm = () => {
             lastBidder: "",
           };
 
-          console.log(newAuctionData);
-
+  
+          // Emptying the inputs
           inputModel.current.value = "";
           inputDescription.current.value = "";
           inputPrice.current.value = "";
           inputDateTime.current.value = "";
-
-          // dispatch(auctionsActions.addAuction(newAuctionData));
 
           fetch(
             `https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions/${newAuctionData.auctionId}.json`,
@@ -156,8 +155,6 @@ const NewAuctionForm = () => {
     );
   };
 
-  console.log("image: ", image);
-
   return (
     <section className={classes.formSection}>
       <SimpleCard>
@@ -173,9 +170,6 @@ const NewAuctionForm = () => {
           <TextField
             required
             inputRef={inputDescription}
-            // id="outlined-basic"
-            // label="Description"
-            // variant="outlined"
             id="outlined-multiline-static"
             label="Description..."
             multiline

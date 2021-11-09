@@ -16,3 +16,8 @@ a {
 * {
   box-sizing: border-box;
 }
+
+#noResults {
+  text-align: center;
+  margin-top: 2rem;
+}

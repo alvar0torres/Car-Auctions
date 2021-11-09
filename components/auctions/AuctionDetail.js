@@ -57,12 +57,10 @@ const AuctionDetail = (props) => {
       .then((data) => {
         if (data != null) {
           for (const value of Object.values(data)) {
-            console.log(value);
             if (
               value.auctionId === router.query.auctionId &&
               value.userId === userId
             ) {
-              console.log("Setting favourite to true...");
               setFavourite(true);
             }
           }
@@ -140,8 +138,6 @@ const AuctionDetail = (props) => {
       userId: userId,
     };
 
-    console.log("FavData is.... " + JSON.stringify(favData));
-
     fetch(
       "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites.json",
       {
@@ -184,15 +180,12 @@ const AuctionDetail = (props) => {
         if (data != null) {
           let counter = 0;
           for (const [key, value] of Object.entries(data)) {
-            console.log(value);
             if (
               value.auctionId === router.query.auctionId &&
               value.userId === userId
             ) {
-              console.log("Coincidence found! Removing item...");
               remove(ref(database, "favourites/" + key));
             } else {
-              console.log("No coincidence found for this one");
               counter++;
             }
 
