@@ -1,8 +1,4 @@
-import { route } from 'next/dist/server/router';
-import { useRouter } from 'next/router'
-import { useEffect } from 'react';
-import * as ga from '../lib/analytics';
-
+import Script from "next/script";
 
 import { Provider } from "react-redux";
 import { CookiesProvider } from "react-cookie";
@@ -14,24 +10,25 @@ import Layout from "../components/layout/Layout";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
-
-  const router = useRouter()
-
-  useEffect(() => {
-    const handleRouteChange = (url) => {
-      ga.pageview(url)
-    }
-    router.events.on('routeChangeComplete', handleRouteChange)
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
-
   return (
     <CookiesProvider>
       <Provider store={store}>
         <Layout>
-          <Component {...pageProps} key={route}/>
+          {/* Global Site Tag (gtag.js) - Google Analytics */}
+          <Script
+            strategy="lazyOnload"
+            src={"https://www.googletagmanager.com/gtag/js?id=G-38WZF6734L"}
+          />
+          <Script strategy="lazyOnload">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', 'G-38WZF6734L');`}
+          </Script>
+
+          <Component {...pageProps} />
         </Layout>
       </Provider>
     </CookiesProvider>
