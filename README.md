@@ -6,6 +6,12 @@ Web application that allows users to buy and sell cars by using an auctions syst
 
 https://car-auctions.vercel.app/
 
+⚠️ You can use the following credentials if you don't have time to create an account:
+
+* email - testuser@email.com
+* password - 123456
+
+🔓
 
 ## Technologies used in this project
 
