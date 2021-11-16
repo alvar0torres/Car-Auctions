@@ -23,6 +23,7 @@ const Navbar = () => {
   const [allAuctionsBtnClass, setAllAuctionsBtnClass] = useState(null);
   const [joinBtnClass, setJoinBtnClass] = useState(null);
   const [sellCarBtnClass, setSellCarBtnClass] = useState(null);
+  const [newAuctionBtnClass, setNewAuctionBtnClass] = useState(null);
   const [myAuctionsBtnClass, setMyAuctionsBtnClass] = useState(null);
   const [contactBtnClass, setContactBtnClass] = useState(null);
   const currentPath = router.pathname;
@@ -79,6 +80,11 @@ const Navbar = () => {
       setSellCarBtnClass(null);
     }
     if (router.pathname.includes("new-auction")) {
+      setNewAuctionBtnClass(classes.selectedBtn);
+    } else {
+      setNewAuctionBtnClass(null);
+    }
+    if (router.pathname.includes("sell-my-car")) {
       setSellCarBtnClass(classes.selectedBtn);
     } else {
       setSellCarBtnClass(null);
@@ -126,7 +132,7 @@ const Navbar = () => {
             )}
             {isLoggedIn && (
               <Link href="/new-auction">
-                <li className={sellCarBtnClass}>Sell My Car</li>
+                <li className={newAuctionBtnClass}>Sell My Car</li>
               </Link>
             )}
             {!isLoggedIn && (
