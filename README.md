@@ -15,6 +15,8 @@ https://car-auctions.vercel.app/
 
 ## Technologies used in this project
 
+* HTML
+* CSS
 * JavaScript
 * React
 * Redux
