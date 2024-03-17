@@ -17,10 +17,11 @@
     "cookie": "^0.4.1",
     "eslint-plugin-testing-library": "^5.0.0",
     "firebase": "^9.2.0",
-    "next": "11.1.2",
-    "react": "17.0.2",
+    "next": "^12.3.4",
+    "node": "^20.11.1",
+    "react": "^17.0.2",
     "react-cookie": "^4.1.1",
-    "react-dom": "17.0.2",
+    "react-dom": "^17.0.2",
     "react-redux": "^7.2.6"
   },
   "devDependencies": {
@@ -28,7 +29,7 @@
     "@testing-library/react": "^12.1.2",
     "babel-jest": "^27.3.1",
     "eslint": "7.32.0",
-    "eslint-config-next": "11.1.2",
+    "eslint-config-next": "^12.3.4",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.3.1",
     "react-test-renderer": "^17.0.2"
