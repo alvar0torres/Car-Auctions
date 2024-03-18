@@ -10,8 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { alertActions } from "../../store/alertSlice";
 import { useCookies } from "react-cookie";
 
-import { ref, update, remove, set } from "firebase/database";
-import database from "../../firebase/firebase";
+import { ref, update, remove, getDatabase } from "firebase/database";
 
 import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
 import daysAndHours from "../../helpers/daysAndHoursConverter";
@@ -35,6 +34,7 @@ const AuctionDetail = (props) => {
   const [cardGridClasses, setCardGridClasses] = useState(
     classes.auctionCardGridActive
   );
+  const db = getDatabase();
 
   useEffect(() => {
     if (remainingTimeinMs < 0) {
@@ -115,7 +115,7 @@ const AuctionDetail = (props) => {
         updates["/auctions/" + auctionId + "/price/"] = bid;
         updates["/auctions/" + auctionId + "/lastBidder/"] = username;
         bidInput.current.value = "";
-        return update(ref(database), updates);
+        return update(ref(db), updates);
       }
 
       addBid(
@@ -184,7 +184,7 @@ const AuctionDetail = (props) => {
               value.auctionId === router.query.auctionId &&
               value.userId === userId
             ) {
-              remove(ref(database, "favourites/" + key));
+              remove(ref(db, "favourites/" + key));
             } else {
               counter++;
             }

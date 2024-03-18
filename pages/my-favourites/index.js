@@ -38,7 +38,7 @@ const Favourites = ({ data }) => {
       .then((data) => {
         if (data != null) {
           for (const value of Object.values(data)) {
-            if (JSON.stringify(value.userId) === userId) {
+            if (value.userId === userId) {
               favouritesIds.push(value.auctionId);
             }
           }

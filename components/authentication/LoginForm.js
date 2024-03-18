@@ -12,6 +12,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import classes from "./LoginForm.module.css";
 
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../firebase/firebase";
+
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -33,68 +36,30 @@ const LoginForm = () => {
       returnSecureToken: true,
     };
 
-    // Signing in user through Firebase
-    fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAtfB7Tgz0D94hYlzsnrPoipQHWhCM_qKY",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(loginData),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.idToken) {
-          dispatch(
-            authActions.login({ token: data.idToken, userId: data.localId })
-          );
-        }
-        if (data.error) {
-          console.log(data.error.message);
-          let message = null;
+    signInWithEmailAndPassword(auth, loginData.email, loginData.password)
+      .then((response) => {
+        const token = response.user.accessToken;
+        const userId = response.user.uid;
 
-          // Adapting error messages so they are easier to understand
-          if (data.error.message === "INVALID_EMAIL") {
-            message = "Please enter a valid e-mail address.";
-          } else if (data.error.message === "EMAIL_NOT_FOUND") {
-            message =
-              "The entered email address is not registered. Please sign up first.";
-          } else if (data.error.message === "INVALID_PASSWORD") {
-            message = "The password is not correct.";
-          } else if (data.error.message === "MISSING_PASSWORD") {
-            message = "The password is missing.";
-          }
+        dispatch(
+          authActions.login({ token, userId })
+        );
 
-          dispatch(alertActions.error(message || data.error.message));
-          setTimeout(() => {
-            dispatch(alertActions.close());
-          }, 5000);
-          
-          setIsLoading(false);
-          return;
-        }
-
-        // We store in cookies the user/session data:
-
-        setCookie("token", JSON.stringify(data.idToken), {
+        setCookie("token", token, {
           path: "/",
-          maxAge: 3600, // Expires after 1hr
+          maxAge: 3600,
           sameSite: true,
         });
-        setCookie("userId", JSON.stringify(data.localId), {
+        setCookie("userId", userId, {
           path: "/",
-          maxAge: 3600, // Expires after 1hr
+          maxAge: 3600,
           sameSite: true,
         });
-        setCookie("expirationTime", JSON.stringify(Date.now() + 3600000), {
+        setCookie("expirationTime", (Date.now() + 3600000).toString(), {
           path: "/",
-          maxAge: 3600, // Expires after 1hr
+          maxAge: 3600,
           sameSite: true,
         });
-
-        const id = data.localId;
 
         return fetch(
           "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/users.json"
@@ -105,12 +70,12 @@ const LoginForm = () => {
 
             if (data != null) {
               for (const value of Object.values(data)) {
-                if (value.userId === id) {
+                if (value.userId === userId) {
                   username = value.username;
 
                   setCookie("username", username, {
                     path: "/",
-                    maxAge: 3600, // Expires after 1hr
+                    maxAge: 3600,
                     sameSite: true,
                   });
                 }
@@ -127,12 +92,19 @@ const LoginForm = () => {
             setTimeout(() => {
               dispatch(alertActions.close());
             }, 5000);
-          });
+          })
+          .catch((error) => {
+            console.log(error);
+          })
       })
       .catch((error) => {
-        console.log(error);
-      });
-  };
+        dispatch(alertActions.error(error.message));
+        setTimeout(() => {
+          dispatch(alertActions.close());
+        }, 5000);
+        setIsLoading(false);
+      })
+    }  
 
   return (
     <section className={classes.formSection}>

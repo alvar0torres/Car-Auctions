@@ -10,8 +10,7 @@ import { useDispatch } from "react-redux";
 import { alertActions } from "../../store/alertSlice";
 
 import classes from "./NewAuctionForm.module.css";
-import { storage } from "../../firebase/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
 
 const NewAuctionForm = () => {
   const dispatch = useDispatch();
@@ -60,6 +59,7 @@ const NewAuctionForm = () => {
     const expirationDate = new Date(inputDateTime.current.value);
     const expirationDateInMs = expirationDate.getTime();
 
+    const storage = getStorage();
     const storageRef = ref(storage, `${image.name}`);
     const uploadTask = uploadBytesResumable(storageRef, image);
 
