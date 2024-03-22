@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { alertActions } from "../../store/alertSlice";
 import { useCookies } from "react-cookie";
 
-import { ref, update, remove, getDatabase } from "firebase/database";
+import { ref, update, remove, getDatabase, onValue } from "firebase/database";
 
 import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
 import daysAndHours from "../../helpers/daysAndHoursConverter";
@@ -50,22 +50,7 @@ const AuctionDetail = (props) => {
   }, []);
 
   useEffect(() => {
-    fetch(
-      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites.json"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data != null) {
-          for (const value of Object.values(data)) {
-            if (
-              value.auctionId === router.query.auctionId &&
-              value.userId === userId
-            ) {
-              setFavourite(true);
-            }
-          }
-        }
-      });
+    setIsFavourite()
   }, []);
 
   const priceClasses = `${classes.price} ${
@@ -131,6 +116,19 @@ const AuctionDetail = (props) => {
       }, 5000);
     }
   };
+
+  function setIsFavourite() {
+    const favourites = ref(db, 'favourites');
+    onValue(favourites, (snapshot) => {
+    const data = snapshot.val();
+    const valuesArray = Object.values(data);
+    const foundFavourite = valuesArray.find(value => value.auctionId === router.query.auctionId && value.userId === userId);
+
+    if (foundFavourite) {
+      setFavourite(true);
+    }
+  });
+  }
 
   function addFav() {
     const favData = {
