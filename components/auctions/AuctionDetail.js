@@ -37,19 +37,7 @@ const AuctionDetail = (props) => {
   const db = getDatabase();
 
   useEffect(() => {
-    if (remainingTimeinMs < 0) {
-      if (props.auction.lastBidder === "") {
-        setLastBidder("This auction ended with no bids");
-        setIsClosed(true);
-      } else {
-        setLastBidder(props.auction.lastBidder);
-      }
-      setIsActive(false);
-      setCardGridClasses(classes.auctionCardGridClosed);
-    }
-  }, []);
-
-  useEffect(() => {
+    setIsAuctionClosed()
     setIsFavourite()
   }, []);
 
@@ -116,6 +104,19 @@ const AuctionDetail = (props) => {
       }, 5000);
     }
   };
+
+  function setIsAuctionClosed() {
+    if (remainingTimeinMs < 0) {
+      if (props.auction.lastBidder === "") {
+        setLastBidder("This auction ended with no bids");
+        setIsClosed(true);
+      } else {
+        setLastBidder(props.auction.lastBidder);
+      }
+      setIsActive(false);
+      setCardGridClasses(classes.auctionCardGridClosed);
+    }
+  }
 
   function setIsFavourite() {
     const favourites = ref(db, 'favourites');
