@@ -12,7 +12,7 @@ import Alert from "@mui/material/Alert";
 
 import classes from "./Layout.module.css";
 
-import database from "../../firebase/firebase";
+import {database, auth} from "../../firebase/firebase";
 
 import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
 

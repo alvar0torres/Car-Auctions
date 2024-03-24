@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { alertActions } from "../../store/alertSlice";
 import { useCookies } from "react-cookie";
 
-import { ref, update, remove, getDatabase, onValue } from "firebase/database";
+import { ref, update, remove, getDatabase, get, push, child } from "firebase/database";
 
 import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
 import daysAndHours from "../../helpers/daysAndHoursConverter";
@@ -23,7 +23,8 @@ const AuctionDetail = (props) => {
   const router = useRouter();
   const bidInput = useRef();
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const [favourite, setFavourite] = useState(false);
+  const [isFavourite, setIsFavourite] = useState(false);
+  const [favouriteKey, setFavouriteKey] = useState("");
   const [lastBidder, setLastBidder] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
@@ -35,27 +36,23 @@ const AuctionDetail = (props) => {
     classes.auctionCardGridActive
   );
   const db = getDatabase();
-
-  useEffect(() => {
-    setIsAuctionClosed()
-    setIsFavourite()
-  }, []);
-
-  const priceClasses = `${classes.price} ${
-    priceIsHighlighted ? classes.bump : ""
-  }`;
-
   const remainingTimeinMs = calculateRemainingTime(
     parseInt(props.auction.expirationTime)
   );
-
   const expirationDate = daysAndHours(remainingTimeinMs);
+  const priceClasses = `${classes.price} ${priceIsHighlighted ? classes.bump : ""}`;
 
-  useEffect(() => {
+  useEffect(async () => {
+    checkIfAuctionClosed();
+    checkIfActive();
+    checkIfFavourite();
+  }, []);
+
+  function checkIfActive() {
     if (remainingTimeinMs < 0) {
       setIsActive(false);
     }
-  }, []);
+  }
 
   const onBidHandler = (event) => {
     event.preventDefault();
@@ -105,7 +102,7 @@ const AuctionDetail = (props) => {
     }
   };
 
-  function setIsAuctionClosed() {
+  function checkIfAuctionClosed() {
     if (remainingTimeinMs < 0) {
       if (props.auction.lastBidder === "") {
         setLastBidder("This auction ended with no bids");
@@ -118,45 +115,66 @@ const AuctionDetail = (props) => {
     }
   }
 
-  function setIsFavourite() {
-    const favourites = ref(db, 'favourites');
-    onValue(favourites, (snapshot) => {
-    const data = snapshot.val();
-    const valuesArray = Object.values(data);
-    const foundFavourite = valuesArray.find(value => value.auctionId === router.query.auctionId && value.userId === userId);
+  function checkIfFavourite() {
+    let isFav = false;
+    let favKey;
 
-    if (foundFavourite) {
-      setFavourite(true);
-    }
-  });
+    const dbRef = ref(db);
+    get(child(dbRef, 'favourites/' + userId)).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+
+        for (const [key, value] of Object.entries(data)) {
+          if (
+            value.auctionId === router.query.auctionId
+          ) {
+            isFav = true;
+            favKey = key;
+          }
+        }
+
+        if (isFav) {
+          setIsFavourite(true);
+          setFavouriteKey(favKey);
+        }
+      } else {
+        console.log("No favourites");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
   }
 
   function addFav() {
     const favData = {
-      auctionId: router.query.auctionId,
-      userId: userId,
+      auctionId: router.query.auctionId
     };
+    const newFavKey = push(child(ref(db), 'favourites/' + userId)).key;
+    const favUpdates = {};
+    favUpdates['favourites/' + userId + '/' + newFavKey] = favData;
 
-    fetch(
-      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites.json",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(favData),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
+    update(ref(db), favUpdates)
+      .then(() => {
+        console.log('Fav added successfully!');
+        setIsFavourite(!isFavourite);
       })
       .catch((error) => {
-        console.error("Error:", error);
+        console.log('Error: ', error);
       });
   }
 
-  const onFavouriteHandler = () => {
+  function removeFav(key) {
+    remove(ref(db, "favourites/" + userId + '/' + key))
+      .then(() => {
+        console.log('Fav removed successfully!');
+        setIsFavourite(!isFavourite);
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+      });
+  }
+
+  const onToggleFavourite = () => {
     if (!isLoggedIn) {
       dispatch(
         alertActions.error(
@@ -169,42 +187,14 @@ const AuctionDetail = (props) => {
       return;
     }
 
-    // Getting favourites list from database:
-    setFavourite(!favourite);
-    fetch(
-      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites.json"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data != null) {
-          let counter = 0;
-          for (const [key, value] of Object.entries(data)) {
-            if (
-              value.auctionId === router.query.auctionId &&
-              value.userId === userId
-            ) {
-              remove(ref(db, "favourites/" + key));
-            } else {
-              counter++;
-            }
-
-            if (counter === Object.keys(data).length) {
-              ///// Adding Favourite to Database /////////
-              addFav();
-            }
-          }
-        } else {
-          ///// Adding Favourite to Database /////////
-          addFav();
-        }
-      });
+    isFavourite ? removeFav(favouriteKey) : addFav();
   };
 
   return (
     <section className={classes.auctionCard}>
       <SimpleCard>
         <div className={classes.auctionCardFlex}>
-          {!favourite && (
+          {!isFavourite && (
             <FavoriteBorderIcon
               sx={{
                 bgcolor: "white",
@@ -216,10 +206,10 @@ const AuctionDetail = (props) => {
               }}
               fontSize="large"
               className={classes.favoriteBtn}
-              onClick={onFavouriteHandler}
+              onClick={onToggleFavourite}
             />
           )}
-          {favourite && (
+          {isFavourite && (
             <FavoriteIcon
               sx={{
                 bgcolor: "white",
@@ -231,7 +221,7 @@ const AuctionDetail = (props) => {
               }}
               fontSize="large"
               className={classes.favoriteBtn}
-              onClick={onFavouriteHandler}
+              onClick={onToggleFavourite}
             />
           )}
           {isActive && <h3 className={classes.activeBadge}>ACTIVE</h3>}

@@ -28,28 +28,26 @@ const Favourites = ({ data }) => {
   let favouritesIds = [];
   let favouriteAuctions = [];
 
-  // Getting the list of favourites and filtering username:
+  // Get the list of favourites for user
   useEffect(() => {
     setIsLoading(true);
     fetch(
-      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites.json"
+      `https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites/${userId}.json`
     )
       .then((response) => response.json())
       .then((data) => {
-        if (data != null) {
+        if (data) {
           for (const value of Object.values(data)) {
-            if (value.userId === userId) {
-              favouritesIds.push(value.auctionId);
-            }
+            favouritesIds.push(value.auctionId);
           }
 
-          // Getting the list of auctions, filtering favourites and adding to final array:
+          // Filter favourites in full list of auctions
           fetch(
             "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions.json"
           )
             .then((response) => response.json())
             .then((data) => {
-              if (data != null) {
+              if (data) {
                 for (const value of Object.values(data)) {
                   if (favouritesIds.includes(value.auctionId)) {
                     favouriteAuctions.push(value);
