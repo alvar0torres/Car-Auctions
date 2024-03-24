@@ -157,6 +157,7 @@ const AuctionDetail = (props) => {
       .then(() => {
         console.log('Fav added successfully!');
         setIsFavourite(!isFavourite);
+        setFavouriteKey(newFavKey);
       })
       .catch((error) => {
         console.log('Error: ', error);
