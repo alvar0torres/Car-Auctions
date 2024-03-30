@@ -12,8 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import classes from "./LoginForm.module.css";
 
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/firebase";
+import { UserAuth } from "./context/AuthContext";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,6 +21,8 @@ const LoginForm = () => {
 
   const emailInput = useRef();
   const passwordInput = useRef();
+
+  const { logIn } = UserAuth();
 
   const dispatch = useDispatch();
 
@@ -32,14 +33,16 @@ const LoginForm = () => {
 
     const loginData = {
       email: emailInput.current.value,
-      password: passwordInput.current.value,
-      returnSecureToken: true,
+      password: passwordInput.current.value
     };
 
-    signInWithEmailAndPassword(auth, loginData.email, loginData.password)
-      .then((response) => {
-        const token = response.user.accessToken;
-        const userId = response.user.uid;
+
+    logIn(loginData.email, loginData.password)
+      .then(({ user }) => {
+        
+        const token = user.accessToken;
+        const userId = user.uid;
+        const username = user.displayName;
 
         dispatch(
           authActions.login({ token, userId })
@@ -60,42 +63,22 @@ const LoginForm = () => {
           maxAge: 3600,
           sameSite: true,
         });
+        setCookie("username", username, {
+          path: "/",
+          maxAge: 3600,
+          sameSite: true,
+        });
 
-        return fetch(
-          "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/users.json"
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            let username = "";
+        emailInput.current.value = "";
+        passwordInput.current.value = "";
 
-            if (data != null) {
-              for (const value of Object.values(data)) {
-                if (value.userId === userId) {
-                  username = value.username;
+        setIsLoading(false);
+        router.push(`/`);
 
-                  setCookie("username", username, {
-                    path: "/",
-                    maxAge: 3600,
-                    sameSite: true,
-                  });
-                }
-              }
-            }
-
-            emailInput.current.value = "";
-            passwordInput.current.value = "";
-
-            setIsLoading(false);
-            router.push(`/`);
-
-            dispatch(alertActions.success("Welcome back, " + username + "!"));
-            setTimeout(() => {
-              dispatch(alertActions.close());
-            }, 5000);
-          })
-          .catch((error) => {
-            console.log(error);
-          })
+        dispatch(alertActions.success("Welcome back, " + username + "!"));
+        setTimeout(() => {
+          dispatch(alertActions.close());
+        }, 5000);
       })
       .catch((error) => {
         dispatch(alertActions.error(error.message));
@@ -104,7 +87,7 @@ const LoginForm = () => {
         }, 5000);
         setIsLoading(false);
       })
-    }  
+  }
 
   return (
     <section className={classes.formSection}>

@@ -9,6 +9,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { alertActions } from "../../store/alertSlice";
 import { useDispatch } from "react-redux";
 
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+
 import classes from "./SignupForm.module.css";
 
 const SignupForm = () => {
@@ -21,86 +23,50 @@ const SignupForm = () => {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-
     setIsLoading(true);
 
-    const enteredData = {
-      email: emailInput.current.value,
-      password: passwordInput.current.value,
-      returnSecureToken: true,
-    };
-
+    const email = emailInput.current.value;
     const username = usernameInput.current.value;
+    const password = passwordInput.current.value;
 
     emailInput.current.value = "";
     passwordInput.current.value = "";
     usernameInput.current.value = "";
 
-    fetch(
-      "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyAtfB7Tgz0D94hYlzsnrPoipQHWhCM_qKY",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(enteredData),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          let message = null;
-          console.log(data.error.message);
+    const auth = getAuth();
 
-          if (data.error.message === "EMAIL_EXISTS") {
-            message = "The email address is already in use by another account.";
-          } else if (data.error.message === "OPERATION_NOT_ALLOWED") {
-            message = "Password sign-in is disabled for this project.";
-          } else if (data.error.message === "TOO_MANY_ATTEMPTS_TRY_LATER") {
-            message =
-              "We have blocked all requests from this device due to unusual activity. Try again later.";
-          } else if (data.error.message === "WEAK_PASSWORD") {
-            message = "Password should be at least 6 characters";
-          }
-
-          dispatch(alertActions.error(message || data.error.message));
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        updateProfile(auth.currentUser, {
+          displayName: username
+        }).then(() => {
+          dispatch(alertActions.success("Account succesfully created! You can now log in."));
           setTimeout(() => {
             dispatch(alertActions.close());
           }, 5000);
+
           setIsLoading(false);
-          return;
-        }
+          router.push(`/login`);
+        }).catch((error) => {
+          console.log(error);
 
-        const IdAndUsername = { userId: data.localId, username: username };
+          dispatch(alertActions.error(error.message));
+          setTimeout(() => {
+            dispatch(alertActions.close());
+          }, 5000);
 
-        fetch(
-          `https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/users.json`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(IdAndUsername),
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Success:", data);
-
-            dispatch(alertActions.success("Account succesfully created! You can now log in."));
-            setTimeout(() => {
-              dispatch(alertActions.close());
-            }, 5000);
-
-            setIsLoading(false);
-            router.push(`/login`);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
+          setIsLoading(false);
+        });
       })
       .catch((error) => {
         console.log(error);
+
+        dispatch(alertActions.error(error.message));
+        setTimeout(() => {
+          dispatch(alertActions.close());
+        }, 5000);
+
+        setIsLoading(false);
       });
   };
 
@@ -136,7 +102,7 @@ const SignupForm = () => {
           {!isLoading && <Button type="submit" variant="contained">
             Submit
           </Button>}
-          {isLoading && <CircularProgress className={classes.progress}/>}
+          {isLoading && <CircularProgress className={classes.progress} />}
         </form>
       </SimpleCard>
     </section>

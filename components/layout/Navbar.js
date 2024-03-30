@@ -11,6 +11,8 @@ import Button from "@mui/material/Button";
 
 import AccountMenu from "./AccountMenu";
 
+import { UserAuth } from "../../components/authentication/context/AuthContext"
+
 import classes from "./Navbar.module.css";
 
 const Navbar = () => {
@@ -31,20 +33,24 @@ const Navbar = () => {
   // Checking in redux store if user is logged in.
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
 
-  // Getting username from cookies and storing it in a variable.
+  // Getting username from cookies
   const username = cookie.username;
+
+  const { logOut } = UserAuth();
 
   // When dispatching the logout action, we also remove all the user cookies. This way, user will be kept logged out if refreshes the page.
   const logoutHandler = (event) => {
     event.preventDefault();
+    logOut();
+    dispatch(authActions.logout());
+    router.push(`/`);
+
     setDrawerClass(classes.mobileNav);
     setBackdropClass(classes.backdrop);
     removeCookie("token", { path: "/" });
     removeCookie("userId", { path: "/" });
     removeCookie("expirationTime", { path: "/" });
     removeCookie("username", { path: "/" });
-    dispatch(authActions.logout());
-    router.push(`/`);
   };
 
   const openDrawerHandler = () => {
