@@ -1,10 +1,7 @@
 // our-domain.com/
 
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { authActions } from "../store/authSlice";
 
-import { parseCookies } from "../helpers/";
 import filteringFunction from "../helpers/filteringFunction";
 
 import AuctionList from "../components/auctions/AuctionList";
@@ -12,20 +9,12 @@ import Spinner from "../components/ui/Spinner";
 import HomepageImage from "../components/ui/HomepageImage";
 import Filter from "../components/filters/Filter";
 
-const HomePage = ({ data }) => {
+const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isEmpty, setIsEmpty] = useState(false);
   const [filteredList, setFilteredList] = useState([]);
   const [status, setStatus] = useState("");
   const [priceRange, setPriceRange] = useState("");
-  const dispatch = useDispatch();
-
-  // Checking whether there are authentication cookies available or not. If available -> Login. Otherwise -> Logout.
-  if (!data.token || !data.userId || !data.username || !data.expirationTime) {
-    dispatch(authActions.logout());
-  } else {
-    dispatch(authActions.login({ token: data.token, userId: data.userId }));
-  }
 
   // Getting the list of all auctions from database:
   useEffect(() => {
@@ -78,11 +67,3 @@ const HomePage = ({ data }) => {
 };
 
 export default HomePage;
-
-HomePage.getInitialProps = async ({ req }) => {
-  const data = parseCookies(req);
-
-  return {
-    data: data && data,
-  };
-};

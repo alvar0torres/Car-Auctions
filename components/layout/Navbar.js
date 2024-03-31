@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { authActions } from "../../store/authSlice";
-import { useCookies } from "react-cookie";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -18,7 +16,6 @@ import classes from "./Navbar.module.css";
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
-  const [cookie, setCookie, removeCookie] = useCookies();
   const [drawerClass, setDrawerClass] = useState(classes.mobileNav);
   const [backdropClass, setBackdropClass] = useState(classes.backdrop);
   const [favouritesBtnClass, setMenuBtnClass] = useState(null);
@@ -30,27 +27,25 @@ const Navbar = () => {
   const [contactBtnClass, setContactBtnClass] = useState(null);
   const currentPath = router.pathname;
 
-  // Checking in redux store if user is logged in.
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { userData, logOut, isLoggedIn } = UserAuth();
 
-  // Getting username from cookies
-  const username = cookie.username;
+  const username = userData?.displayName;
 
-  const { logOut } = UserAuth();
-
-  // When dispatching the logout action, we also remove all the user cookies. This way, user will be kept logged out if refreshes the page.
   const logoutHandler = (event) => {
     event.preventDefault();
-    logOut();
-    dispatch(authActions.logout());
-    router.push(`/`);
+    logOut()
+      .then(() => {
+        console.log('Signed out.');
 
-    setDrawerClass(classes.mobileNav);
-    setBackdropClass(classes.backdrop);
-    removeCookie("token", { path: "/" });
-    removeCookie("userId", { path: "/" });
-    removeCookie("expirationTime", { path: "/" });
-    removeCookie("username", { path: "/" });
+        dispatch(authActions.logout());
+        router.push(`/`);
+
+        setDrawerClass(classes.mobileNav);
+        setBackdropClass(classes.backdrop);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const openDrawerHandler = () => {
@@ -63,7 +58,7 @@ const Navbar = () => {
     setBackdropClass(classes.backdrop);
   };
 
-  // When clicking on a menu botton, we want to keep the button selected. So this Useffect checks the url route and assing the right class to the button.
+  // When clicking on a navbar button, keep it highlighted
   useEffect(() => {
     if (router.pathname.includes("my-favourites")) {
       setMenuBtnClass(classes.selectedBtn);
@@ -175,7 +170,7 @@ const Navbar = () => {
                       onClick={logoutHandler}
                       variant="contained"
                     >
-                      ({cookie.username}) Logout
+                      ({username}) Logout
                     </Button>
                   </Link>
                 </li>

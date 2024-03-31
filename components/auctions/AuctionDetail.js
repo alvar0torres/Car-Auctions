@@ -11,6 +11,7 @@ import { alertActions } from "../../store/alertSlice";
 import { useCookies } from "react-cookie";
 
 import { ref, update, remove, getDatabase, get, push, child } from "firebase/database";
+import { UserAuth } from "../../components/authentication/context/AuthContext";
 
 import calculateRemainingTime from "../../helpers/remainingTimeCalculator";
 import daysAndHours from "../../helpers/daysAndHoursConverter";
@@ -22,15 +23,13 @@ const AuctionDetail = (props) => {
   const dispatch = useDispatch();
   const router = useRouter();
   const bidInput = useRef();
-  const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const { isLoggedIn, userData } = UserAuth();
   const [isFavourite, setIsFavourite] = useState(false);
   const [favouriteKey, setFavouriteKey] = useState("");
   const [lastBidder, setLastBidder] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
   const [cookie, setCookie, removeCookie] = useCookies();
-  const userId = cookie.userId;
-  const username = cookie.username;
   const [price, setPrice] = useState(props.auction.price);
   const [cardGridClasses, setCardGridClasses] = useState(
     classes.auctionCardGridActive
@@ -42,11 +41,13 @@ const AuctionDetail = (props) => {
   const expirationDate = daysAndHours(remainingTimeinMs);
   const priceClasses = `${classes.price} ${priceIsHighlighted ? classes.bump : ""}`;
 
-  useEffect(async () => {
+  useEffect(() => {
     checkIfAuctionClosed();
     checkIfActive();
-    checkIfFavourite();
-  }, []);
+    if (isLoggedIn) {
+      checkIfFavourite();
+    }
+  });
 
   function checkIfActive() {
     if (remainingTimeinMs < 0) {
@@ -90,7 +91,7 @@ const AuctionDetail = (props) => {
 
       addBid(
         parseInt(bidInput.current.value).toLocaleString("en-US"),
-        username
+        userData.displayName
       );
     } else {
       dispatch(
@@ -120,7 +121,7 @@ const AuctionDetail = (props) => {
     let favKey;
 
     const dbRef = ref(db);
-    get(child(dbRef, 'favourites/' + userId)).then((snapshot) => {
+    get(child(dbRef, 'favourites/' + userData.uid)).then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
 
@@ -149,9 +150,9 @@ const AuctionDetail = (props) => {
     const favData = {
       auctionId: router.query.auctionId
     };
-    const newFavKey = push(child(ref(db), 'favourites/' + userId)).key;
+    const newFavKey = push(child(ref(db), 'favourites/' + userData.uid)).key;
     const favUpdates = {};
-    favUpdates['favourites/' + userId + '/' + newFavKey] = favData;
+    favUpdates['favourites/' + userData.uid + '/' + newFavKey] = favData;
 
     update(ref(db), favUpdates)
       .then(() => {
@@ -165,7 +166,7 @@ const AuctionDetail = (props) => {
   }
 
   function removeFav(key) {
-    remove(ref(db, "favourites/" + userId + '/' + key))
+    remove(ref(db, "favourites/" + userData.uid + '/' + key))
       .then(() => {
         console.log('Fav removed successfully!');
         setIsFavourite(!isFavourite);

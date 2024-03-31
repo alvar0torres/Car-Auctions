@@ -1,9 +1,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { authActions } from "../../store/authSlice";
 import { alertActions } from "../../store/alertSlice";
 import { useDispatch } from "react-redux";
-import { useCookies } from "react-cookie";
 
 import SimpleCard from "../../components/ui/SimpleCard";
 import TextField from "@mui/material/TextField";
@@ -17,7 +15,6 @@ import { UserAuth } from "./context/AuthContext";
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const [cookie, setCookie] = useCookies();
 
   const emailInput = useRef();
   const passwordInput = useRef();
@@ -39,35 +36,7 @@ const LoginForm = () => {
 
     logIn(loginData.email, loginData.password)
       .then(({ user }) => {
-        
-        const token = user.accessToken;
-        const userId = user.uid;
         const username = user.displayName;
-
-        dispatch(
-          authActions.login({ token, userId })
-        );
-
-        setCookie("token", token, {
-          path: "/",
-          maxAge: 3600,
-          sameSite: true,
-        });
-        setCookie("userId", userId, {
-          path: "/",
-          maxAge: 3600,
-          sameSite: true,
-        });
-        setCookie("expirationTime", (Date.now() + 3600000).toString(), {
-          path: "/",
-          maxAge: 3600,
-          sameSite: true,
-        });
-        setCookie("username", username, {
-          path: "/",
-          maxAge: 3600,
-          sameSite: true,
-        });
 
         emailInput.current.value = "";
         passwordInput.current.value = "";

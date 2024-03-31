@@ -7,24 +7,31 @@ const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [userData, setUserData] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const logIn = (email, password) => {
         return signInWithEmailAndPassword(auth, email, password);
     };
 
     const logOut = () => {
-        signOut(auth);
+        return signOut(auth);
     };
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (data) => {
-            setUserData(data);
-        });
-        return () => unsubscribe();
-    }, [userData, logIn, logOut])
+        onAuthStateChanged(auth, (data) => {
+            if (data) {
+                setUserData(data);
+                console.log("data: ", data);
+                setIsLoggedIn(true);
+            } else {
+                setUserData(null);
+                setIsLoggedIn(false);
+            }
+        })
+    }, []);
 
     return (
-        <AuthContext.Provider value={{ userData, logIn, logOut }}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{ userData, logIn, logOut, isLoggedIn }}>{children}</AuthContext.Provider>
     )
 }
 
