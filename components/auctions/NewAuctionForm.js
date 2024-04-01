@@ -10,6 +10,8 @@ import { alertActions } from "../../store/alertSlice";
 
 import classes from "./NewAuctionForm.module.css";
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
+import { getDatabase, update, ref as dbRef } from "firebase/database";
+
 import { UserAuth } from "../authentication/context/AuthContext";
 
 const NewAuctionForm = () => {
@@ -18,6 +20,7 @@ const NewAuctionForm = () => {
   const router = useRouter();
   const [image, setImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const db = getDatabase();
 
   const inputModel = useRef();
   const inputDescription = useRef();
@@ -42,6 +45,20 @@ const NewAuctionForm = () => {
       setImage(e.target.files[0]);
     }
   };
+
+  const addNewAuction = (newAuctionData) => {
+    const updates = {};
+    updates['/auctions/' + newAuctionData.auctionId] = newAuctionData;
+    update(dbRef(db), updates)
+      .then(() => {
+        console.log('Auction created successfully.');
+        setIsUploading(false);
+        router.push(`/`);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -109,46 +126,26 @@ const NewAuctionForm = () => {
         }
       },
       () => {
-        // Upload completed successfully, now we can get the download URL
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-
+        // Upload completed successfully, now we can get the download URL and create new auction
+        getDownloadURL(uploadTask.snapshot.ref).then((url) => {
           const newAuctionData = {
             model: inputModel.current.value,
             auctionId: auctionId.toString(),
             expirationTime: expirationDateInMs,
             price: parseInt(inputPrice.current.value).toLocaleString("en-US"),
             description: inputDescription.current.value,
-            owner: userData.displayName,
-            image: downloadURL,
+            owner: userData?.displayName,
+            image: url,
             lastBidder: "",
           };
 
+          addNewAuction(newAuctionData);
 
-          // Emptying the inputs
+          // Clear inputs
           inputModel.current.value = "";
           inputDescription.current.value = "";
           inputPrice.current.value = "";
           inputDateTime.current.value = "";
-
-          fetch(
-            `https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions/${newAuctionData.auctionId}.json`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(newAuctionData),
-            }
-          )
-            .then((response) => response.json())
-            .then((data) => {
-              console.log("Success:", data);
-              setIsUploading(false);
-              router.push(`/`);
-            })
-            .catch((error) => {
-              console.error("Error:", error);
-            });
         });
       }
     );
