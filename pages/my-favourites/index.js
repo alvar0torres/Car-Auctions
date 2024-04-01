@@ -1,10 +1,6 @@
 // our-domain.com/my-favourites
 
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-
-import { parseCookies } from "../../helpers";
 
 import AuctionList from "../../components/auctions/AuctionList";
 import Spinner from "../../components/ui/Spinner";
@@ -12,9 +8,8 @@ import Spinner from "../../components/ui/Spinner";
 import { UserAuth } from "../../components/authentication/context/AuthContext";
 
 
-const Favourites = ({ data }) => {
+const Favourites = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
   const [favourites, setFavourites] = useState([]);
 
   const { userData } = UserAuth();
@@ -68,11 +63,3 @@ const Favourites = ({ data }) => {
 };
 
 export default Favourites;
-
-Favourites.getInitialProps = async ({ req }) => {
-  const data = parseCookies(req);
-
-  return {
-    data: data && data,
-  };
-};

@@ -6,9 +6,8 @@ import TextField from "@mui/material/TextField";
 
 import { useRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { alertActions } from "../../store/alertSlice";
-import { useCookies } from "react-cookie";
 
 import { ref, update, remove, getDatabase, get, push, child } from "firebase/database";
 import { UserAuth } from "../../components/authentication/context/AuthContext";
@@ -29,7 +28,6 @@ const AuctionDetail = (props) => {
   const [lastBidder, setLastBidder] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
-  const [cookie, setCookie, removeCookie] = useCookies();
   const [price, setPrice] = useState(props.auction.price);
   const [cardGridClasses, setCardGridClasses] = useState(
     classes.auctionCardGridActive

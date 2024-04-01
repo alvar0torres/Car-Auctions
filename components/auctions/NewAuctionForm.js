@@ -5,17 +5,16 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/router";
-import { useCookies } from "react-cookie";
 import { useDispatch } from "react-redux";
 import { alertActions } from "../../store/alertSlice";
 
 import classes from "./NewAuctionForm.module.css";
 import { ref, uploadBytesResumable, getDownloadURL, getStorage } from "firebase/storage";
+import { UserAuth } from "../authentication/context/AuthContext";
 
 const NewAuctionForm = () => {
   const dispatch = useDispatch();
-  const [cookie, setCookie, removeCookie] = useCookies();
-  const username = cookie.username;
+  const { userData } = UserAuth();
   const router = useRouter();
   const [image, setImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -119,12 +118,12 @@ const NewAuctionForm = () => {
             expirationTime: expirationDateInMs,
             price: parseInt(inputPrice.current.value).toLocaleString("en-US"),
             description: inputDescription.current.value,
-            owner: username,
+            owner: userData.displayName,
             image: downloadURL,
             lastBidder: "",
           };
 
-  
+
           // Emptying the inputs
           inputModel.current.value = "";
           inputDescription.current.value = "";

@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { authActions } from "../../store/authSlice";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -15,7 +13,6 @@ import classes from "./Navbar.module.css";
 
 const Navbar = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
   const [drawerClass, setDrawerClass] = useState(classes.mobileNav);
   const [backdropClass, setBackdropClass] = useState(classes.backdrop);
   const [favouritesBtnClass, setMenuBtnClass] = useState(null);
@@ -36,8 +33,6 @@ const Navbar = () => {
     logOut()
       .then(() => {
         console.log('Signed out.');
-
-        dispatch(authActions.logout());
         router.push(`/`);
 
         setDrawerClass(classes.mobileNav);
