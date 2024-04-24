@@ -8,6 +8,8 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 
+import { getDatabase, ref, child, push, update } from "firebase/database";
+
 import classes from "./ContactForm.module.css";
 
 const ContactForm = () => {
@@ -16,6 +18,7 @@ const ContactForm = () => {
   const inputEmail = useRef();
   const inputMessage = useRef();
   const [isLoading, setIsLoading] = useState(false);
+  const db = getDatabase();
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -31,31 +34,23 @@ const ContactForm = () => {
       date: currentDate,
     };
 
-    // Storing data in database
-    fetch(
-      `https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/contact.json`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-        setIsLoading(false);
-        dispatch(
-          alertActions.success("Message sent! We will contact you soon.")
-        );
-        setTimeout(() => {
-          dispatch(alertActions.close());
-        }, 5000);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    // Store message in database
+    const newContactMessageKey = push(child(ref(db), 'contact')).key;
+    const updates = {};
+    updates['/contact/' + newContactMessageKey] = data;
+
+    update(ref(db), updates).then(() => {
+      setIsLoading(false);
+      dispatch(
+        alertActions.success("Message sent! We will contact you soon.")
+      );
+      setTimeout(() => {
+        dispatch(alertActions.close());
+      }, 5000);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 
     inputName.current.value = "";
     inputEmail.current.value = "";

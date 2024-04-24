@@ -21,7 +21,6 @@ export const AuthContextProvider = ({ children }) => {
         onAuthStateChanged(auth, (data) => {
             if (data) {
                 setUserData(data);
-                console.log("data: ", data);
                 setIsLoggedIn(true);
             } else {
                 setUserData(null);

@@ -71,14 +71,14 @@ const AuctionDetail = (props) => {
     } else if (
       bidInput.current.value > parseFloat(props.auction.price.replace(/,/g, ""))
     ) {
-      //Setting price so that change is displayed in-page
+      //Update displayed price
       setPriceIsHighlighted(true);
       setTimeout(() => {
         setPriceIsHighlighted(false);
       }, 300);
       setPrice(parseInt(bidInput.current.value).toLocaleString("en-US"));
 
-      //Updating price and last bidder in database:
+      //Update price and last bidder in database:
       function addBid(bid, username) {
         const updates = {};
         updates["/auctions/" + auctionId + "/price/"] = bid;
