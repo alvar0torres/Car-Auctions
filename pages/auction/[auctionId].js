@@ -5,7 +5,9 @@ import { useRouter } from "next/router";
 
 import AuctionDetail from "../../components/auctions/AuctionDetail";
 
-const Auction = ({ data }) => {
+import { getDatabase, ref, child, get } from "firebase/database";
+
+const Auction = () => {
   const [auctionId, setAuctionId] = useState("");
   const [auctionInfo, setAuctionInfo] = useState(null);
   const router = useRouter();
@@ -17,20 +19,13 @@ const Auction = ({ data }) => {
     }
   }, [router]);
 
-  // Get the list of auctions:
+  // Get current auction
   useEffect(() => {
-    fetch(
-      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions.json"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        if (data != null) {
-          for (const value of Object.values(data)) {
-            if (value.auctionId === auctionId) {
-              setAuctionInfo(value);
-            }
-          }
-        }
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, `auctions/${auctionId}`))
+      .then((data) => setAuctionInfo(data.val()))
+      .catch((error) => {
+        console.error(error);
       });
   }, [auctionId]);
 
