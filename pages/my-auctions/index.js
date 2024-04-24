@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 
 import Spinner from "../../components/ui/Spinner";
+import { UserAuth } from "../../components/authentication/context/AuthContext";
 
 import AuctionList from "../../components/auctions/AuctionList";
 import classes from "../../styles/myAuctions.module.css";
 
-import { UserAuth } from "../../components/authentication/context/AuthContext";
+import { getDatabase, ref, child, get } from "firebase/database";
 
 const MyAuctions = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,27 +16,22 @@ const MyAuctions = () => {
   const [isEmpty, setIsEmpty] = useState(true);
   const { userData } = UserAuth();
 
-  // Get the list of auctions for user:
   useEffect(() => {
-    setIsLoading(true);
-    let myAuctionsData = [];
-    fetch(
-      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions.json"
-    )
-      .then((response) => response.json())
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, `auctions`))
       .then((data) => {
-        if (data != null) {
-          for (const value of Object.values(data)) {
-            if (value.owner === userData?.displayName) {
-              myAuctionsData.push(value);
-            }
-          }
-          if (myAuctionsData.length != 0) {
-            setIsEmpty(false);
-            setMyAuctions(myAuctionsData);
-          }
-          setIsLoading(false);
+        const auctionList = Object.values(data.val());
+        const myAuctionList = auctionList.filter(action => action.owner === userData?.displayName)
+
+        if (myAuctionList.length) {
+          setIsEmpty(false);
+          setMyAuctions(myAuctionList);
         }
+        setIsLoading(false);
+      }
+      )
+      .catch((error) => {
+        console.error(error);
       });
   }, [userData]);
 
