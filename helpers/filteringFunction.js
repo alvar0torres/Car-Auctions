@@ -1,6 +1,6 @@
 import calculateRemainingTime from "./remainingTimeCalculator";
 
-function filteringFunction(status, priceRange, array) {
+function filterAuctions(status, priceRange, array) {
 
   function isActive(auction) {
     return calculateRemainingTime(auction.expirationTime) > 0;
@@ -63,4 +63,4 @@ function filteringFunction(status, priceRange, array) {
 }
 
 
-export default filteringFunction;
+export default filterAuctions;

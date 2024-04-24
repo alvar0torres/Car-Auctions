@@ -2,12 +2,14 @@
 
 import { useEffect, useState } from "react";
 
-import filteringFunction from "../helpers/filteringFunction";
+import filterAuctions from "../helpers/filteringFunction";
 
 import AuctionList from "../components/auctions/AuctionList";
 import Spinner from "../components/ui/Spinner";
 import HomepageImage from "../components/ui/HomepageImage";
 import Filter from "../components/filters/Filter";
+
+import { getDatabase, ref, child, get } from "firebase/database";
 
 const HomePage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,36 +18,23 @@ const HomePage = () => {
   const [status, setStatus] = useState("");
   const [priceRange, setPriceRange] = useState("");
 
-  // Getting the list of all auctions from database:
+  // Get all auctions from db
   useEffect(() => {
     setIsLoading(true);
-    fetch(
-      "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions.json"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        let list = [];
+    const dbRef = ref(getDatabase());
+    get(child(dbRef, `auctions`))
+      .then((data) => data.val())
+      .then((auctions) => {
+        const auctionList = Object.values(auctions);
+        const filtered = filterAuctions(status, priceRange, auctionList);
 
-        // Storing response values in a temporal list for later filtering
-        if (data != null) {
-          for (const value of Object.values(data)) {
-            list.push(value);
-          }
-        }
-
-        // Filtering results by auction state and price range
-        const filtered = filteringFunction(status, priceRange, list);
-
-        //Checking if the filtered list is empty
         if (filtered.length === 0) {
           setIsEmpty(true);
         } else {
           setIsEmpty(false);
         }
 
-        // Storing filtered list in a state:
         setFilteredList(filtered);
-        // Setting isLoading to false so that the loading spinner is not rendered anymore
         setIsLoading(false);
       });
   }, [status, priceRange]);
