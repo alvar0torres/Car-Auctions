@@ -128,12 +128,12 @@ const Navbar = () => {
             )}
             {isLoggedIn && (
               <Link href="/new-auction">
-                <li className={newAuctionBtnClass}>Sell My Car</li>
+                <li className={newAuctionBtnClass}>New Auction</li>
               </Link>
             )}
             {!isLoggedIn && (
               <Link href="/sell-my-car">
-                <li className={sellCarBtnClass}>Sell My Car</li>
+                <li className={sellCarBtnClass}>New Auction</li>
               </Link>
             )}
 
@@ -274,7 +274,7 @@ const Navbar = () => {
                     variant="contained"
                     onClick={closeDrawerHandler}
                   >
-                    <li className={sellCarBtnClass}>Sell My Car</li>
+                    <li className={sellCarBtnClass}>New Auction</li>
                   </Button>
                 </Link>
               </li>
@@ -287,7 +287,7 @@ const Navbar = () => {
                     variant="contained"
                     onClick={closeDrawerHandler}
                   >
-                    Sell My Car
+                    New Auction
                   </Button>
                 </Link>
               </li>

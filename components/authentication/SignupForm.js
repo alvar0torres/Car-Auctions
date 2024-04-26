@@ -40,7 +40,7 @@ const SignupForm = () => {
         updateProfile(auth.currentUser, {
           displayName: username
         }).then(() => {
-          dispatch(alertActions.success("Account succesfully created! You can now log in."));
+          dispatch(alertActions.success("Account succesfully created!"));
           setTimeout(() => {
             dispatch(alertActions.close());
           }, 5000);

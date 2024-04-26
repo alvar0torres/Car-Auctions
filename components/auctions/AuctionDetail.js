@@ -28,7 +28,7 @@ const AuctionDetail = (props) => {
   const [lastBidder, setLastBidder] = useState("");
   const [isActive, setIsActive] = useState(true);
   const [isClosed, setIsClosed] = useState(false);
-  const [price, setPrice] = useState(props.auction.price);
+  const [price, setPrice] = useState();
   const [cardGridClasses, setCardGridClasses] = useState(
     classes.auctionCardGridActive
   );
@@ -38,6 +38,10 @@ const AuctionDetail = (props) => {
   );
   const expirationDate = daysAndHours(remainingTimeinMs);
   const priceClasses = `${classes.price} ${priceIsHighlighted ? classes.bump : ""}`;
+
+  useEffect(() => {
+    setPrice(props.auction.price);
+  }, [props]);
 
   useEffect(() => {
     checkIfAuctionClosed();
@@ -72,11 +76,11 @@ const AuctionDetail = (props) => {
       bidInput.current.value > parseFloat(props.auction.price.replace(/,/g, ""))
     ) {
       //Update displayed price
+      setPrice(bidInput.current.value);
       setPriceIsHighlighted(true);
       setTimeout(() => {
         setPriceIsHighlighted(false);
       }, 300);
-      setPrice(parseInt(bidInput.current.value).toLocaleString("en-US"));
 
       //Update price and last bidder in database:
       function addBid(bid, username) {
@@ -88,7 +92,7 @@ const AuctionDetail = (props) => {
       }
 
       addBid(
-        parseInt(bidInput.current.value).toLocaleString("en-US"),
+        bidInput.current.value,
         userData.displayName
       );
     } else {
