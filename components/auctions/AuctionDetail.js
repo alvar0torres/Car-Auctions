@@ -73,8 +73,7 @@ const AuctionDetail = (props) => {
       }, 5000);
       return;
     } else if (
-      bidInput.current.value > parseFloat(props.auction.price.replace(/,/g, ""))
-    ) {
+      +bidInput.current.value > price) {
       //Update displayed price
       setPrice(bidInput.current.value);
       setPriceIsHighlighted(true);
