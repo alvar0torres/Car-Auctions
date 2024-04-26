@@ -7,51 +7,47 @@ import Spinner from "../../components/ui/Spinner";
 
 import { UserAuth } from "../../components/authentication/context/AuthContext";
 
+import { getDatabase, ref, child, get } from "firebase/database";
+
 
 const Favourites = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [favourites, setFavourites] = useState([]);
-
   const { userData } = UserAuth();
 
   // Get the list of favourites for user
   useEffect(() => {
     setIsLoading(true);
-    
-    let favouritesIds = [];
-    let favouriteAuctions = [];
 
     if (userData) {
-      fetch(
-        `https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/favourites/${userData.uid}.json`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data) {
-            for (const value of Object.values(data)) {
-              favouritesIds.push(value.auctionId);
-            }
+      const dbRef = ref(getDatabase());
+      get(child(dbRef, `favourites/${userData.uid}`)).then((data) => {
+        if (data.exists()) {
+          const favouriteIDs = [];
+          for (const value of Object.values(data.val())) {
+            favouriteIDs.push(value.auctionId);
+          }
 
-            // Filter user favourites
-            fetch(
-              "https://auctions-6be0c-default-rtdb.europe-west1.firebasedatabase.app/auctions.json"
-            )
-              .then((response) => response.json())
-              .then((data) => {
-                if (data) {
-                  for (const value of Object.values(data)) {
-                    if (favouritesIds.includes(value.auctionId)) {
-                      favouriteAuctions.push(value);
-                    }
-                  }
-                  setFavourites(favouriteAuctions);
+          favouriteIDs.map((id, index) => {
+            get(child(dbRef, `auctions/${id}`))
+              .then((data) => data.val())
+              .then((auction) => {
+                if (auction) {
+                  setFavourites(prevFavorites => [...prevFavorites, auction]);
+                }
+                if (index === (favouriteIDs.length - 1)) {
                   setIsLoading(false);
                 }
+              })
+              .catch((error) => {
+                console.error(error);
               });
-          }
-        });
+          })
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
     }
-
   }, [userData]);
 
   return (
