@@ -4,9 +4,6 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 
 export default function SelectLabels(props) {
-//   const [status, setStatus] = React.useState("");
-//   const [priceRange, setPriceRange] = React.useState("");
-
   const handleStatusChange = (event) => {
     props.setStatus(event.target.value);
   };
