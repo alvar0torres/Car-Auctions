@@ -1,0 +1,10 @@
+.button {
+    background-color: #017cbf;
+    color: white;
+    font-family: "Roboto Condensed", sans-serif;
+    font-size: 1rem;
+}
+
+.mobileNavItem {
+    margin: 1rem 0;
+}

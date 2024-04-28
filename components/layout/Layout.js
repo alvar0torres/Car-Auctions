@@ -4,7 +4,7 @@ import { alertActions } from "../../store/alertSlice";
 
 import Footer from "./Footer";
 
-import Navbar from "./Navbar";
+import Navbar from "./Navbar/Navbar";
 import Alert from "@mui/material/Alert";
 
 import classes from "./Layout.module.css";

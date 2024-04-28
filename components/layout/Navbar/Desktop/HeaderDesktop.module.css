@@ -1,0 +1,77 @@
+.headerDesktop {
+    width: 100vw;
+    height: 6.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: white;
+    padding: 0 5%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.headerDesktop ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: baseline;
+}
+
+.headerDesktop li {
+    margin-left: 0.25rem;
+}
+
+.button:hover,
+.button:active {
+    background-color: black;
+}
+
+.DesktopNavBarButtons {
+    font-size: 1.2rem;
+}
+
+.DesktopNavBarButtons li {
+    margin: 0 2rem;
+    cursor: pointer;
+}
+
+.DesktopNavBarButtons li:hover,
+.DesktopNavBarButtons li:active {
+    color: orangered;
+    font-weight: bold;
+}
+
+@media (max-width: 80rem) {
+    .DesktopNavBarButtons {
+        font-size: 1rem;
+    }
+
+    .headerDesktop {
+        padding: 0 4%;
+    }
+
+    .button {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 69rem) {
+    .DesktopNavBarButtons {
+        font-size: 0.75rem;
+    }
+
+    .button {
+        font-size: 0.65rem;
+    }
+
+    .headerDesktop {
+        padding: 0 1%;
+    }
+}
+
+@media (max-width: 45rem) {
+    .headerDesktop {
+        display: none;
+        padding: 0 1%;
+    }
+}
